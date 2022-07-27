@@ -1,0 +1,43 @@
+.Login {
+    background-color: brown;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    height: 15vw;
+    width: 20vw;
+    padding: 7rem;
+    border-radius: 10px;
+    margin: 0;
+}
+.Login-title {
+    font-weight: bold;
+    width:15vw;
+    margin-bottom: 10%;
+    margin-top: 0%;
+}
+
+.Login-button,.Exit-button {
+    margin-top: 1rem;
+    margin: 0 5% 0 0;
+}
+
+.entry-link {
+    font-size: small;
+    color: whitesmoke;
+    margin: 3%;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.login-input {
+    border-radius: 5px;
+    border: rgb(161, 21, 21) inset 3px !important;
+}
+
+.text-white {
+    color: white;
+}
+
+.Error {
+    color: red;
+}

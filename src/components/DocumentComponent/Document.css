@@ -1,0 +1,140 @@
+.Noticia, .Noticia-detalle {
+    background-color: whitesmoke;
+    border-width: 1rem;
+    width: 30vw;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    padding: 1%;
+    margin: 0.5% 0% 0.5% .6%;
+}
+
+.Noticia-detalle {
+    width: auto !important;
+    margin: 1rem 0rem 1rem 2rem;
+}
+
+.Form {
+    padding: 1% 2%;
+}
+
+.Noticia:hover{
+    cursor: pointer;
+    background-color: white;
+}
+.Header-noticia {
+    border-radius: 10px 10px 0px 0px;
+}
+.Footer-noticia {
+    border-radius: 0px 0px 10px 10px;
+}
+.titulo {
+    color: whitesmoke;
+    text-align: start;
+
+}
+
+input.titulo {
+    border-radius: 5px;
+    border: inset;
+    padding: 0.3rem;
+    width: 60%;
+    color: black
+}
+
+.Header-noticia, .Footer-noticia {
+    justify-content: space-between;
+    background-color: brown;
+    display: flex;
+    align-items: center;
+    padding: .5rem;
+}
+
+.Date {
+    text-align: right;
+    font-size: smaller;
+    margin-left: auto;
+}
+
+.Informacion {
+    padding: .5em;
+    text-align: start;
+    margin: 0%;
+    width: 90%;
+}
+
+textarea.Informacion {
+    border: whitesmoke solid;
+    width: 100%;
+    padding: 0.5rem;
+}
+
+.Body-noticia {
+    min-height: 25vh;
+}
+
+.Footer-content {
+    margin-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    color: white;
+}
+
+.Footer-noticia> Button {
+    margin: 0px -40% 0px 1rem;
+    color: white;
+    padding: 0.5rem;
+    font-weight: 600;
+}
+.Footer-noticia > Button:active {
+    border: inset darkseagreen;
+}
+
+.Textborders {
+    border: gray thin solid;
+    border-top: none;
+    border-bottom: none;
+}
+.h4 {
+    margin-right: .5rem;
+}
+.Footer-content-end {
+    justify-content: flex-end;
+    display: flex;
+}
+.Col-text {
+    text-align: left;
+}
+
+.Fa-edit {
+    padding: 0.2rem 0.6rem;
+    color: whitesmoke;
+    display: flex;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.stroke {
+    margin: 0;
+    font-family: arial;
+    font-size:70px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    }
+    
+    svg {
+      display: block;
+      height: 2rem;
+    }
+    
+    text {
+      fill: white;
+      stroke: black;
+      stroke-width: 2;
+    }
+
+    .loader {
+        margin-right: 1rem;
+    }

@@ -1,0 +1,43 @@
+.Header {
+    width: 100%;
+    padding: 2em 0 3em 0;
+    display: flexbox;
+    flex-direction: row;
+    background-color: whitesmoke;
+    min-height: 5vh;
+    align-items: center;
+    
+}
+
+.App-title {
+    font-size: calc(32px + 2vmin);
+    font-family: fantasy;
+    text-align: right;
+    padding: 0 3rem 0 0;
+    color: rgb(0, 0, 0);
+}
+
+.Header-content {
+    padding-left:1rem ;
+    float: left;
+    height: calc(40px + 10vh);
+}
+
+.Header-route:last-of-type {
+    border-right: solid black thin;
+}
+
+.Header-route {
+    padding: 1rem;
+    border: solid black thin;
+    border-right: none;
+    text-decoration: none;
+    font-weight: bolder;
+    color: antiquewhite !important;
+    background-image: linear-gradient(0deg, rgba(121,9,9,1) 35%, rgba(255,255,255,1) 150%);
+    flex-grow: 1;
+}
+
+.Header-route:hover {
+    background-image: linear-gradient(0deg, rgba(121,9,9,1) 35%, rgba(255,255,255,1) 120%);
+}

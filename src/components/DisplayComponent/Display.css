@@ -1,0 +1,11 @@
+.Galeria-noticias {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5%;
+    padding: 1.5rem;
+}
+
+#loader {
+    margin: 30% 50%;
+
+}
