@@ -6,15 +6,17 @@ import Comments from "../CommentsComponent/Comments";
 import DocsContext from "../../Contexts/DocumentContext";
 import CredentialContext from "../../Contexts/CredentialContext";
 import { IoReturnUpBack } from "react-icons/io5";
-import { FaEdit } from "react-icons/fa";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import { useLocation } from "wouter";
-import { saveAs } from "file-saver";
+import {ScaleLoader} from "react-spinners"
+import fileDownload from 'js-file-download'
 import axios from "axios";
 import "./Document.css";
 
 export default function DetailedDocument(params) {
   const API_URL = "http://localhost:8000/api/";
   const { data } = useContext(DocsContext);
+  const [downloading, setDownload] = useState(false);
   const [edit, toggleEdit] = useState(false);
   const [location, setLocation] = useLocation();
   const { logData } = useContext(CredentialContext);
@@ -32,13 +34,14 @@ export default function DetailedDocument(params) {
 
   const Download = (evt) => {
     evt.preventDefault();
-    axios.post(API_URL + "download", doc).then((response) => {
+    setDownload(true);
+    axios.post(API_URL + "download", doc, {
+      responseType: 'blob',
+    }).then((response) => {
       const filename = doc.title+'.'+doc.file.split('.').pop();
-      const blob = response.blob();
-      let link = document.createElement("a");
-      link.href = window.URL.createObjectUrl(blob)
-      link.download = filename;
-      //link.click();
+      fileDownload(response.data, filename)
+    }).then((res) => {
+      setDownload(false);
     });
   };
   const editFile = (e) => {
@@ -48,7 +51,6 @@ export default function DetailedDocument(params) {
 
   return (
     <>
-      {/* go back arrow. <- */}
       <div className="Noticia-detalle">
         <div className="Header-noticia">
           <span className="Fa-edit" onClick={() => window.history.go(-1)}>
@@ -57,9 +59,14 @@ export default function DetailedDocument(params) {
           <h2 className="Titulo">{doc.title ? doc.title : null}</h2>
           <span className="Date">{doc.Date ? doc.Date : null}</span>
           {edit ? (
+              <>
             <span className="Fa-edit" onClick={editFile}>
               <FaEdit></FaEdit>
             </span>
+            <span className="Fa-edit" onClick={() => { console.log('que pasa'); } }>
+                <FaTrash></FaTrash>
+              </span>
+              </>
           ) : null}
         </div>
         <div className="Body-noticia">
@@ -75,9 +82,10 @@ export default function DetailedDocument(params) {
             <Button
               className="Download-button"
               variant="success"
+              disabled={downloading}
               onClick={Download}
             >
-              Descarga
+              {downloading ? <ScaleLoader className="loader" height={20} color={"#FFF"} /> : 'Descarga'}
             </Button>
            : null}
           <span className="Footer-content">

@@ -3,13 +3,15 @@ import DocsContext from '../../Contexts/DocumentContext';
 import Document from '../DocumentComponent/Document';
 import { PulseLoader } from 'react-spinners';
 import Pagination from '../PaginationComponent/Pagination';
+import {useLocation} from 'wouter';
 import './Display.css';
 
 export default function Display(){
     //Galeria donde se exhiben los nuevos documentos y notificaciones.
     const {data} = useContext(DocsContext);
+    const [location, setLocation] = useLocation();
     const [loading, setLoading] = useState(true);
-    const value = useMemo(()=> {return data.reverse()}, [data]);
+    const value = useMemo(()=> {return data}, [data]);
     //pagination values.
     let PageSize = 4;
     const [currentPage, setCurrentPage] = useState(1);
@@ -17,7 +19,7 @@ export default function Display(){
     const currentData = useMemo(() => {
     const firstPageIndex = (currentPage - 1) * PageSize;
     const lastPageIndex = firstPageIndex + PageSize;
-    return value.slice(firstPageIndex, lastPageIndex);
+    return value.reverse().slice(firstPageIndex, lastPageIndex);
   }, [currentPage, value]);
     
     useEffect(() => { 

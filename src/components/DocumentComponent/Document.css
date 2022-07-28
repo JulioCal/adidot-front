@@ -31,7 +31,7 @@
 .titulo {
     color: whitesmoke;
     text-align: start;
-
+    overflow-wrap: anywhere;
 }
 
 input.titulo {
@@ -136,5 +136,5 @@ textarea.Informacion {
     }
 
     .loader {
-        margin-right: 1rem;
+        margin: 0 .8rem;
     }

@@ -12,6 +12,7 @@ import {
 import { useForm } from "react-hook-form";
 import { useLocation } from "wouter";
 import { ScaleLoader } from "react-spinners";
+import { IoReturnUpBack } from "react-icons/io5";
 import "./Document.css";
 import axios from "axios";
 import CredentialContext from "../../Contexts/CredentialContext";
@@ -61,7 +62,6 @@ export default function NewDocument() {
     formData.append("text", datax.text);
     formData.append("permit", datax.permit);
     formData.append("group", datax.group);
-    console.log(datax);
     axios({
       headers: { "Content-Type": "multipart/form-data; charset=utf-8;" },
       method: "post",
@@ -69,7 +69,6 @@ export default function NewDocument() {
       data: formData,
     })
       .then((response) => {
-        console.log(response);
         setToast((toast) => ({
           ...toast,
           variant: "success",
@@ -100,7 +99,6 @@ export default function NewDocument() {
     <>
       <ToastContainer
         position="bottom-end"
-        style={{ position: "absolute" }}
         className="p-3"
       >
         <Toast
@@ -140,14 +138,18 @@ export default function NewDocument() {
             <Col>
               <Form.Group controlId="Name">
                 <Stack direction="horizontal">
+                  <span className="Fa-edit" onClick={() => window.history.go(-1)}>
+                    <IoReturnUpBack></IoReturnUpBack>
+                  </span>
                   <Form.Label>
                     <h4 className="h4 mt-2">Titulo : </h4>
                   </Form.Label>
                   <Form.Control
                     className="titulo"
                     type="text"
+                    maxlength="34"
                     size="sm"
-                    {...register("title")}
+                    {...register("title", {required:true})}
                   />
                 </Stack>
               </Form.Group>
@@ -210,7 +212,7 @@ export default function NewDocument() {
             <Col className="Footer-content-end">
               <Stack direction="horizontal">
                 {loading ? (
-                  <ScaleLoader className="loader mt-3" color={"#eee"} />
+                  <ScaleLoader className="loader mt-3" height={20} color={"#FFF"} />
                 ) : (
                   <Button
                     variant="success"

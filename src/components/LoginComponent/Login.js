@@ -186,7 +186,7 @@ export default function Login(){
                     <Col>
                         <Form.Label>Rol desempeñado</Form.Label>
                         <Form.Select className="mb-3" {...register("role")}>
-                            <option>Administrador</option>
+                            {/*<option>Administrador</option>*/}
                             <option>Analista</option>
                             <option>Gerente</option>
                         </Form.Select>
