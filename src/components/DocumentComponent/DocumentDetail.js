@@ -69,7 +69,7 @@ export default function DetailedDocument(params) {
             <span className="Fa-edit" onClick={editFile}>
               <FaEdit></FaEdit>
             </span>
-            <span className="Fa-edit" onClick={() => { deleteFile } }>
+            <span className="Fa-edit" onClick={deleteFile}>
                 <FaTrash></FaTrash>
               </span>
               </>
