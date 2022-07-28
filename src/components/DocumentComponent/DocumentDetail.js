@@ -49,6 +49,12 @@ export default function DetailedDocument(params) {
     setLocation(location + "/edit", doc);
   };
 
+  const deleteFile = (e) => {
+    e.preventDefault();
+    console.log(e.target);
+    //axios.delete(API_URL+'')
+  }
+
   return (
     <>
       <div className="Noticia-detalle">
@@ -63,7 +69,7 @@ export default function DetailedDocument(params) {
             <span className="Fa-edit" onClick={editFile}>
               <FaEdit></FaEdit>
             </span>
-            <span className="Fa-edit" onClick={() => { console.log('que pasa'); } }>
+            <span className="Fa-edit" onClick={() => { deleteFile } }>
                 <FaTrash></FaTrash>
               </span>
               </>
