@@ -5,6 +5,7 @@
     height: 70vh;
     margin: 1rem;
     width: 40%;
+    display: inline-block;
     overflow-y: scroll;
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
@@ -25,4 +26,17 @@
     margin: .2rem 1rem;
     padding: .6rem;
     background-color: ghostwhite;
+}
+
+.plus-button {
+    color: white;
+    display:block;
+    padding: 0.5rem 0.7rem;
+    margin: 0px 0.5rem;
+    width: fit-content;
+    border-radius: 0px 0px 10px 10px;
+    background-color: brown;
+}
+.plus-button:hover {
+    cursor: pointer;
 }

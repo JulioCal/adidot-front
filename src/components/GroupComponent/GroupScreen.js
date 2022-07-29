@@ -8,11 +8,10 @@ import {
     Row,
     Col,
     Stack,
-    Toast,
-    ToastContainer,
   } from "react-bootstrap";
   import { useForm } from "react-hook-form";
 import CredentialContext from "../../Contexts/CredentialContext"
+import { FaPlus } from 'react-icons/fa'
 import {useLocation} from 'wouter'
 import axios from 'axios'
 import Constants from '../Constants';
@@ -24,6 +23,7 @@ export default function GroupScreen() {
     const {logData} = useContext(CredentialContext);
     const Gerencias = Constants;
     const [groupArray, setArray] = useState(Gerencias);
+    let newArray = [];
     useEffect(() => {
         if(!logData.isLogged) {
             setLocation('/');
@@ -38,23 +38,33 @@ export default function GroupScreen() {
         items.splice(result.destination.index, 0, reorderedItem);
         setArray(items);
     }
-
     return (
       <DragDropContext onDragEnd={handleOnDragEnd}>
         <span
-          onClick={() => {
-            console.log("crear grupo action");
-          }}
-        >
-          {" "}
-          \+/{" "}
+          className="plus-button"
+          onClick={() => { console.log("crear grupo action"); }}>
+        <FaPlus></FaPlus>
         </span>
-        {/*mostrar lista de grupos del usuario. */}
-        {/*modal de creacion de nuevo grupo */}
         <div className="dropeable-list">
           <Droppable droppableId="dropeable-container">
             {(provided) => 
                 <ul className="dropeable-container" {...provided.droppableProps} ref={provided.innerRef}>
+                    {newArray.map(({id,name}, index) =>   
+                        {return (
+                        <Draggable key={id} draggableId={id} index={index}>
+                            {(provided) => (<li className='dropeable-list-item' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>{name}</li>)}
+                        </Draggable>)})}
+                    {provided.placeholder}
+                </ul>}
+          </Droppable>
+        </div>
+        <div className="dropeable-list">
+          <Droppable droppableId="dropeable-container">
+            {(provided) => 
+                <ul className="dropeable-container" {...provided.droppableProps} ref={provided.innerRef}>
+                    <Form>
+                      <Form.Control type="text" placeholder='buscar trabajadores...' />
+                    </Form>
                     {groupArray.map(({id,name}, index) =>   
                         {return (
                         <Draggable key={id} draggableId={id} index={index}>
