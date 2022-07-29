@@ -15,11 +15,11 @@ const Context = React.createContext({});
           if(logData.isLogged) {
                 axios.get(API_URL + '/document', {
                 params: { owner: logData.cedula }}).then((response) => { 
-                updateData(response.data)})
+                updateData(response.data.reverse())})
             .catch((error) => { console.error('There was an error!', error)});}
           else {axios.get(API_URL + '/document', {
                 params: { permit: 'public' }}).then((response) => {
-                  updateData(response.data)})
+                  updateData(response.data.reverse())})
             .catch((error) => { console.error('There was an error!', error)});}
         }
         },[location, logData.isLogged])

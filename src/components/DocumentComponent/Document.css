@@ -1,7 +1,7 @@
 .Noticia, .Noticia-detalle {
     background-color: whitesmoke;
     border-width: 1rem;
-    width: 30vw;
+    width: 34vw;
     border-radius: 15px;
     display: flex;
     flex-direction: column;

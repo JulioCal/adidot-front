@@ -1,0 +1,28 @@
+.dropeable-list {
+    border-radius: 10px;
+    border: inset .3rem grey;
+    background-color: rosybrown;
+    height: 70vh;
+    margin: 1rem;
+    width: 40%;
+    overflow-y: scroll;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+.dropeable-list::-webkit-scrollbar {
+    display:none;
+}
+
+.dropeable-container {
+    padding: 0%;
+}
+
+.dropeable-container > li {
+    list-style: none;
+}
+.dropeable-list-item {
+    border-radius: 10px;
+    margin: .2rem 1rem;
+    padding: .6rem;
+    background-color: ghostwhite;
+}

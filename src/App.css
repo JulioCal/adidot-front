@@ -13,16 +13,14 @@
   color: rgb(0, 0, 0);
 }
 .First-segment {
-  width: 65vw;
+  width: 75vw;
   order: 1;
 }
 
 .Second-segment {
-  width: 20vw;
+  width: 15vw;
   order: 2;
-  padding: 1% 5%;
-  justify-content: center;
-  align-items: center;
+  padding: 2rem 0rem;
 }
 
 .Second-segment >.Noticia {

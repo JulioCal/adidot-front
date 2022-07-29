@@ -51,9 +51,19 @@ export default function DetailedDocument(params) {
 
   const deleteFile = (e) => {
     e.preventDefault();
-    console.log(e.target);
-    //axios.delete(API_URL+'')
+    let headers = setHeaders();
+    axios.delete(API_URL+`document/${doc.id}`,{headers}).then(response => setLocation('/'))
   }
+
+  const setHeaders = () => {
+    if(window.sessionStorage.getItem('token') != null)
+    {let token = window.sessionStorage.getItem('token');
+    const headers = {
+                    Authorization: `Bearer ${token}`,
+                    Accept :'application/json', 
+                    }
+    return headers;}
+}
 
   return (
     <>

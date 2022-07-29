@@ -19,7 +19,7 @@ export default function Display(){
     const currentData = useMemo(() => {
     const firstPageIndex = (currentPage - 1) * PageSize;
     const lastPageIndex = firstPageIndex + PageSize;
-    return value.reverse().slice(firstPageIndex, lastPageIndex);
+    return value.slice(firstPageIndex, lastPageIndex);
   }, [currentPage, value]);
     
     useEffect(() => { 

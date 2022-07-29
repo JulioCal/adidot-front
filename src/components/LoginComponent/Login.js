@@ -6,6 +6,7 @@ import Document from '../DocumentComponent/Document';
 import DocumentContext from '../../Contexts/DocumentContext';
 import CredentialContext from "../../Contexts/CredentialContext";
 import { PulseLoader } from 'react-spinners';
+import Constants from '../Constants';
 import axios from 'axios';
 import './Login.css';
 
@@ -14,6 +15,7 @@ export default function Login(){
     //helpers
     const API_URL = `http://localhost:8000/api`; 
     let loginScreen;
+    const [Gerencias] = useState(Constants);
     //data states
     const {data, updateData} = useContext(DocumentContext);
     const {logData, setLog} = useContext(CredentialContext);
@@ -29,7 +31,7 @@ export default function Login(){
 
     useEffect(() => {
         if(data != null) 
-        {setHistory(data.slice(-6,-4).reverse())}
+        {setHistory(data.slice(-6,-4))}
       },[data])
 
 
@@ -194,30 +196,7 @@ export default function Login(){
                     <Col>
                         <Form.Label>Gerencia a la que pertenece</Form.Label>
                         <Form.Select className="mb-3" {...register("gerencia", {required:true})}>
-                            <option>Administracion</option>
-                            <option>Atencion al Ciudadano</option>
-                            <option>Auditoria Interna</option>
-                            <option>Comunicacion Corporativa</option>
-                            <option>Consultoria Juridica</option>
-                            <option>Directorio</option>
-                            <option>Recursos Humanos</option>
-                            <option>Gerencia de Bienestar Social</option>
-                            <option>Gerencia de Servicios Generales</option>
-                            <option>Gerencia de Investigacion y Desarrollo</option>
-                            <option>Gerencia de Desarrollo Empresarial</option>
-                            <option>Gerencia de Desarrollo Agricola</option>
-                            <option>Gerencia de Desarrollo Minero</option>
-                            <option>Gerencia de Desarrollo Social</option>
-                            <option>Gerencia de Infraestructura</option>
-                            <option>Gerencia de Seguridad y Proteccion Integral</option>
-                            <option>Gerencia General</option>
-                            <option>Gerencia de Organizacion y Control de P.</option>
-                            <option>Gerencia de Planificacion del Desarrollo T.</option>
-                            <option>Gerencia de Relaciones Nacionales e Int.</option>
-                            <option>Informatica y Sistemas</option>
-                            <option>Presidencia</option>
-                            <option>Presupuesto</option>
-                            <option>Turismo</option>
+                            {Gerencias.map(({id,name}) => <option key={id}>{name}</option>)}
                         </Form.Select>
                     </Col>
                 </Row>
