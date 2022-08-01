@@ -16,6 +16,7 @@
 
 .dropeable-container {
     padding: 0%;
+    min-height: 70vh;
 }
 
 .dropeable-container > li {
