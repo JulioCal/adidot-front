@@ -6,7 +6,7 @@ const CredentialContext = React.createContext({
 
    export function LoginContextProvider({children}){
     const [logData ,setLog] = useState({
-        login:'', key:'', gerencia:'', cedula:'', isLogged: false// should be false
+        login:'', key:'', gerencia:'', cedula:'', isLogged: true// should be false
     })
     return <CredentialContext.Provider value={{logData, setLog}}>
         {children}

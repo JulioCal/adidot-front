@@ -1,4 +1,4 @@
-import React, { useState,useEffect, useContext, useMemo } from "react";
+import React, { useState,useEffect, useContext, } from "react";
 import axios from 'axios';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -10,7 +10,7 @@ export default function Comments(params) {
     const [comment, updateComment] = useState([]);
     const [text, updateText] = useState('');
     //logged should be a global variable, so all components can access the data. 
-    const {logData, setLog} = useContext(CredentialContext)
+    const {logData} = useContext(CredentialContext)
     const Comments = comment.map((comment) => <li className="comment" >{comment.text +'. '+ comment.owner + ':' + comment.date}</li>
     )
     const doc = params.params;
@@ -50,7 +50,7 @@ export default function Comments(params) {
     }
 
     useEffect( function () {
-        //updateComment(params.params.comments);
+        updateComment(params.params.comments);
     },[]);
 
     return(<>
