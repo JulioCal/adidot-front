@@ -1,11 +1,9 @@
 .dropeable-list {
-    border-radius: 10px;
+    border-radius: 5px;
     border: inset .3rem grey;
-    background-color: rosybrown;
+    background-color: lightgrey;
     height: 50vh;
     margin: 1rem;
-    width: 40%;
-    display: inline-block;
     overflow-y: scroll;
     -ms-overflow-style: none;
     /* IE and Edge */
@@ -35,11 +33,10 @@
 
 .dropeable-container {
     padding: 0%;
-    min-height: 70vh;
+    min-height: 50vh;
 }
 .Body-group {
-    margin: 0rem 0.5rem;
-    background-color: ghostwhite;
+    background-color: #e7e7e7;
     min-height: 25vh;
 }
 
@@ -58,6 +55,7 @@
 }
 
 .dropeable-list-item,.dli {
+    list-style:none;
     border-radius: 10px;
     margin: .2rem 1rem;
     padding: .6rem;
@@ -72,6 +70,7 @@
     margin-left: 90%;
     width: fit-content;
     border-radius: 0px 0px 10px 10px;
+    transition: .5s;
     background-color: rosybrown;
 }
 
@@ -81,6 +80,7 @@
 
 .plus-button:hover {
     cursor: pointer;
+    background-color: brown;
 }
 
 .controled-input {

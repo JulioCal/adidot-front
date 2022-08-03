@@ -11,8 +11,7 @@ export default function Comments(params) {
     const [text, updateText] = useState('');
     //logged should be a global variable, so all components can access the data. 
     const {logData} = useContext(CredentialContext)
-    const Comments = comment.map((comment) => <li className="comment" >{comment.text +'. '+ comment.owner + ':' + comment.date}</li>
-    )
+    //const Comments = comment.map((text, owner, date) => <li className="comment" >{text +'. '+ owner + ':' + date}</li>)
     const doc = params.params;
 
     let currDate = new Date();
@@ -55,7 +54,7 @@ export default function Comments(params) {
 
     return(<>
         <div className="Comments" >
-            <ul className="comment-container">{Comments}</ul>
+            <ul className="comment-container"></ul>
         </div>
         {logData.isLogged ?
         <Form onSubmit={handleSubmit}>
