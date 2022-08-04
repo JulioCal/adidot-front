@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useMemo } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import CredentialContext from "../../Contexts/CredentialContext";
 import { Button, Form, Modal, Row, Col } from "react-bootstrap";
@@ -16,7 +16,7 @@ import "./GroupScreen.css";
 export default function GroupScreen() {
   const columnsFromBackend = {
     id: uuidv4(),
-    nombre: "Gerencias constantes",
+    nombre: "Gerencias",
     items: Constants(),
   };
 
@@ -30,40 +30,72 @@ export default function GroupScreen() {
   const [location, setLocation] = useLocation();
   const { logData } = useContext(CredentialContext);
   const [showCreateGroup, setShow] = useState(false);
-  const [groupArray, setGroups] = useState({ items: [], nombre: "user groups" });
+  const [groupArray, setGroups] = useState({
+    items: [],
+    nombre: "user groups",
+  });
   const [groupConstant, setConstant] = useState(columnsFromBackend);
   const [newArray, setNewArray] = useState(ColumnsToBackend);
   const [allTrabajadores, setTrabajadores] = useState([]);
-  const { register, handleSubmit, reset, control, formState: { errors } } = useForm({mode: "onChange"});
+  let helperArray = useMemo(() => {
+    let hA = Constants();
+    console.log(newArray.items);
+    if (newArray.items.length > 0) {
+      for (let i = 0; i < newArray.items.length; i++) {
+        for (let j = 0; j < hA.length; j++) {
+          if (newArray.items[i].id === hA[j].id) {
+            hA.splice(j, 1);
+          }
+        }
+      }
+    }
+    return hA;
+  }, [newArray]);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    control,
+    formState: { errors },
+  } = useForm({ mode: "onChange" });
 
   useEffect(() => {
     if (!logData.isLogged) {
       setLocation("/");
     }
     let headers = setHeaders();
-    axios
-      .get(URL_API + "trabajador", { headers })
-      .then((response) => setTrabajadores(response.data.splice(1, 1)))
+    axios.get(URL_API + "trabajador", { headers }).then((response) => {
+      response.data.splice(0, 1);
+      setTrabajadores(response.data);
+    });
     //axios.get(URL_API+'groups').then(response => setGroups((groupArray) => ({ ...groupArray, items: response.data })));
   }, [location, logData.isLogged]);
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     e.preventDefault();
-    let tempArray = Constants().reverse();
     let filtered = [];
-    let search = e.target.value;
-    if(search != "") {filtered = allTrabajadores.filter(str => str.nombre.replace(/\s/g,'').includes(search));}
-    if(filtered.length > 0) {
+    let search = e.target.search.value;
+    if (search !== "") {
+      filtered = allTrabajadores.filter((str) =>
+        str.nombre.replace(/\s/g, "").includes(search)
+      );
+    }
+    if (filtered.length > 0) {
       for (let index = 0; index < filtered.length; index++) {
         filtered[index].id = filtered[index].cedula.toString();
-        tempArray.push(filtered[index]);
       }
-      setConstant((groupArray) => ({ ...groupArray, items: tempArray.reverse() }));
+      setConstant((groupArray) => ({
+        ...groupArray,
+        items: filtered,
+      }));
+    } else {
+      console.log(helperArray);
+      setConstant((groupArray) => ({
+        ...groupArray,
+        items: helperArray,
+      }));
     }
-    else {
-      setConstant((groupArray) => ({ ...groupArray, items: tempArray.reverse() }));
-    }
-  }
+  };
 
   const setHeaders = () => {
     let token = window.sessionStorage.getItem("token");
@@ -78,6 +110,7 @@ export default function GroupScreen() {
 
   const CreateNewGroup = () => {
     let headers = setHeaders();
+    console.log(newArray);
     //axios.post(URL_API+'groups', newArray, {headers}). then(response => console.log(response))
   };
 
@@ -153,20 +186,21 @@ export default function GroupScreen() {
             <Row>
               <Col>
                 <div className="dropeable-list">
-                <Form>
-                  <Form.Control
-                    className="controled-input"
-                    type="text"
-                    onChange={handleChange}
-                    placeholder=" buscador empleados..." />
-                </Form>
+                  <Form onSubmit={handleChange}>
+                    <Form.Control
+                      name="search"
+                      className="controled-input"
+                      type="text"
+                      placeholder=" buscador empleados..."
+                    />
+                  </Form>
                   <Droppable droppableId={groupConstant.id}>
                     {(provided) => (
                       <ul
                         className="dropeable-container"
                         {...provided.droppableProps}
                         ref={provided.innerRef}
-                      >                
+                      >
                         {groupConstant.items.map(({ id, nombre }, index) => {
                           return (
                             <Draggable key={id} draggableId={id} index={index}>
