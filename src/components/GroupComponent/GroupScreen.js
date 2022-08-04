@@ -67,7 +67,7 @@ export default function GroupScreen() {
       response.data.splice(0, 1);
       setTrabajadores(response.data);
     });
-    //axios.get(URL_API+'groups').then(response => setGroups((groupArray) => ({ ...groupArray, items: response.data })));
+    //axios.get(URL_API+'group', logData.cedula).then(response => setGroups((groupArray) => ({ ...groupArray, items: response.data })));
   }, [location, logData.isLogged]);
 
   const handleChange = (e) => {
@@ -108,11 +108,20 @@ export default function GroupScreen() {
 
   const CreateNewGroup = () => {
     let headers = setHeaders();
-    console.log(newArray);
-    //axios.post(URL_API+'groups', newArray, {headers}). then(response => console.log(response))
-    setNewArray((reset) => ({ ...reset, nombre: "Nuevo grupo...", items: [] }));
-    handleClose();
+    let formData = new FormData();
+    formData.append("name", newArray.nombre);
+    formData.append("integrantes", btoa(JSON.stringify(newArray.items)));
+    axios.post(URL_API + "group", formData, { headers }).then((response) => {
+      console.log(response); //toast for feedback
+      resetForm();
+    });
   };
+
+  function resetForm() {
+    setNewArray((reset) => ({ ...reset, nombre: "Nuevo grupo...", items: [] }));
+    setConstant((reset) => ({ ...reset, items: helperArray }));
+    handleClose();
+  }
 
   function onDragEnd(result, arrayFrom, sourcArray, arrayTo, destArray) {
     if (!result.destination) return;
