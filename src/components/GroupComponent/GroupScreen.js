@@ -4,12 +4,11 @@ import { useState, useEffect, useContext, useMemo } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import CredentialContext from "../../Contexts/CredentialContext";
 import { Button, Form, Modal, Row, Col } from "react-bootstrap";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaTrash } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa";
 import Constants from "../Constants";
 import { useLocation } from "wouter";
 import { v4 as uuidv4 } from "uuid";
-import { useForm, useWatch } from "react-hook-form";
 import axios from "axios";
 import "./GroupScreen.css";
 
@@ -37,6 +36,7 @@ export default function GroupScreen() {
   const [groupConstant, setConstant] = useState(columnsFromBackend);
   const [newArray, setNewArray] = useState(ColumnsToBackend);
   const [allTrabajadores, setTrabajadores] = useState([]);
+  //memorized helper for group creation.
   let helperArray = useMemo(() => {
     let hA = Constants();
     if (newArray.items.length > 0) {
@@ -50,13 +50,6 @@ export default function GroupScreen() {
     }
     return hA;
   }, [newArray]);
-  const {
-    register,
-    handleSubmit,
-    reset,
-    control,
-    formState: { errors },
-  } = useForm({ mode: "onChange" });
 
   useEffect(() => {
     if (!logData.isLogged) {
@@ -67,7 +60,19 @@ export default function GroupScreen() {
       response.data.splice(0, 1);
       setTrabajadores(response.data);
     });
-    //axios.get(URL_API+'group', logData.cedula).then(response => setGroups((groupArray) => ({ ...groupArray, items: response.data })));
+    axios
+      .get(URL_API + "group", {
+        headers,
+        params: {
+          trabajador: logData.cedula,
+        },
+      })
+      .then((response) =>
+        setGroups((groupArray) => ({
+          ...groupArray,
+          items: JSON.parse(response.data),
+        }))
+      );
   }, [location, logData.isLogged]);
 
   const handleChange = (e) => {
@@ -109,12 +114,13 @@ export default function GroupScreen() {
   const CreateNewGroup = () => {
     let headers = setHeaders();
     let formData = new FormData();
-    formData.append("name", newArray.nombre);
-    formData.append("integrantes", btoa(JSON.stringify(newArray.items)));
+    formData.append("nombre", newArray.nombre);
+    formData.append("integrantes", JSON.stringify(newArray.items));
+    formData.append("owner", logData.cedula);
     axios.post(URL_API + "group", formData, { headers }).then((response) => {
       console.log(response); //toast for feedback
-      resetForm();
     });
+    resetForm();
   };
 
   function resetForm() {
@@ -155,6 +161,12 @@ export default function GroupScreen() {
       sourcArray((groupArray) => ({ ...groupArray, items: items }));
     }
   }
+
+  function deleteGroup(x) {
+    //seguro? X-borrar-X popover.
+    //axios.delete(API_URL+`group/${x}, {headers}`).then(response => Toast(response.message,success)).catch(e => Toast(e.message,danger))
+  }
+
   return (
     <>
       <div className="Header-noticia m-3 mt-4 mb-0">
@@ -166,13 +178,13 @@ export default function GroupScreen() {
         </span>
         <ul className=" ul-dp ">
           {groupArray.items.length > 0
-            ? groupArray.items.map(({ nombre }) => (
+            ? groupArray.items.map(({ nombre, id }) => (
                 <li className="dli">
                   {nombre}
-                  <span className="Fa-edit-alt">
-                    <FaEdit></FaEdit>
-                  </span>
-                  <span className="Fa-edit-alt">
+                  <span
+                    onCLick={deleteGroup(id)}
+                    className="Fa-edit-alt disabled"
+                  >
                     <FaTrash></FaTrash>
                   </span>
                 </li>
