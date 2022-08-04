@@ -22,7 +22,7 @@ export default function GroupScreen() {
 
   const ColumnsToBackend = {
     id: uuidv4(),
-    nombre: "Nuevo grupo",
+    nombre: "Nuevo grupo...",
     items: [],
   };
 
@@ -39,7 +39,6 @@ export default function GroupScreen() {
   const [allTrabajadores, setTrabajadores] = useState([]);
   let helperArray = useMemo(() => {
     let hA = Constants();
-    console.log(newArray.items);
     if (newArray.items.length > 0) {
       for (let i = 0; i < newArray.items.length; i++) {
         for (let j = 0; j < hA.length; j++) {
@@ -89,7 +88,6 @@ export default function GroupScreen() {
         items: filtered,
       }));
     } else {
-      console.log(helperArray);
       setConstant((groupArray) => ({
         ...groupArray,
         items: helperArray,
@@ -112,6 +110,8 @@ export default function GroupScreen() {
     let headers = setHeaders();
     console.log(newArray);
     //axios.post(URL_API+'groups', newArray, {headers}). then(response => console.log(response))
+    setNewArray((reset) => ({ ...reset, nombre: "Nuevo grupo...", items: [] }));
+    handleClose();
   };
 
   function onDragEnd(result, arrayFrom, sourcArray, arrayTo, destArray) {
@@ -180,7 +180,17 @@ export default function GroupScreen() {
             <Row>
               <Col> </Col>
               <Col style={{ textAlign: "center" }}>
-                <h4>{newArray.nombre}</h4>
+                <h4>
+                  <Form.Control
+                    className="m-3 mt-0 mb-0 controled-input-2"
+                    size="sm"
+                    value={newArray.nombre}
+                    onChange={(e) =>
+                      setNewArray((ga) => ({ ...ga, nombre: e.target.value }))
+                    }
+                    placeholder={newArray.nombre}
+                  />
+                </h4>
               </Col>
             </Row>
             <Row>
