@@ -3,7 +3,15 @@
 import { useState, useEffect, useContext, useMemo } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import CredentialContext from "../../Contexts/CredentialContext";
-import { Button, Form, Modal, Row, Col } from "react-bootstrap";
+import {
+  Button,
+  Form,
+  Modal,
+  Row,
+  Col,
+  Toast,
+  ToastContainer,
+} from "react-bootstrap";
 import { FaTrash } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa";
 import Constants from "../Constants";
@@ -25,10 +33,17 @@ export default function GroupScreen() {
     items: [],
   };
 
-  const URL_API = "http://localhost:8000/api/";
+  const API_URL = "http://localhost:8000/api/";
   const [location, setLocation] = useLocation();
   const { logData } = useContext(CredentialContext);
   const [showCreateGroup, setShow] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [kill, setDelete] = useState(false);
+  const [toast, setToast] = useState({
+    variant: "",
+    message: "",
+    show: false,
+  });
   const [groupArray, setGroups] = useState({
     items: [],
     nombre: "user groups",
@@ -56,24 +71,29 @@ export default function GroupScreen() {
       setLocation("/");
     }
     let headers = setHeaders();
-    axios.get(URL_API + "trabajador", { headers }).then((response) => {
+    axios.get(API_URL + "trabajador", { headers }).then((response) => {
       response.data.splice(0, 1);
       setTrabajadores(response.data);
     });
     axios
-      .get(URL_API + "group", {
+      .get(API_URL + "group", {
         headers,
         params: {
           trabajador: logData.cedula,
         },
       })
-      .then((response) =>
+      .then((response) => {
         setGroups((groupArray) => ({
           ...groupArray,
-          items: JSON.parse(response.data),
-        }))
-      );
+          items: [],
+        }));
+        console.log(response);
+      });
   }, [location, logData.isLogged]);
+
+  function Toaster(variant, message) {
+    setToast({ show: true, variant: variant, message: message });
+  }
 
   const handleChange = (e) => {
     e.preventDefault();
@@ -108,25 +128,28 @@ export default function GroupScreen() {
     };
     return headers;
   };
-  const handleClose = () => setShow(false);
+  const handleClose = () => {
+    setShow(false);
+    resetForm();
+  };
   const handleShow = () => setShow(true);
 
   const CreateNewGroup = () => {
     let headers = setHeaders();
     let formData = new FormData();
     formData.append("nombre", newArray.nombre);
+    console.log(newArray.items);
     formData.append("integrantes", JSON.stringify(newArray.items));
     formData.append("owner", logData.cedula);
-    axios.post(URL_API + "group", formData, { headers }).then((response) => {
-      console.log(response); //toast for feedback
+    axios.post(API_URL + "group", formData, { headers }).then((response) => {
+      Toaster("success", response.data.message);
     });
-    resetForm();
+    handleClose();
   };
 
   function resetForm() {
     setNewArray((reset) => ({ ...reset, nombre: "Nuevo grupo...", items: [] }));
-    setConstant((reset) => ({ ...reset, items: helperArray }));
-    handleClose();
+    setConstant((reset) => ({ ...reset, items: Constants() }));
   }
 
   function onDragEnd(result, arrayFrom, sourcArray, arrayTo, destArray) {
@@ -163,8 +186,7 @@ export default function GroupScreen() {
   }
 
   function deleteGroup(x) {
-    //seguro? X-borrar-X popover.
-    //axios.delete(API_URL+`group/${x}, {headers}`).then(response => Toast(response.message,success)).catch(e => Toast(e.message,danger))
+    console.log(x);
   }
 
   return (
@@ -182,7 +204,7 @@ export default function GroupScreen() {
                 <li className="dli">
                   {nombre}
                   <span
-                    onCLick={deleteGroup(id)}
+                    onClick={deleteGroup(id)}
                     className="Fa-edit-alt disabled"
                   >
                     <FaTrash></FaTrash>
@@ -292,6 +314,22 @@ export default function GroupScreen() {
           <Button onClick={CreateNewGroup}> Crear nuevo grupo </Button>
         </Modal.Footer>
       </Modal>
+
+      <ToastContainer position="bottom-end" className="p-3">
+        <Toast
+          bg={toast.variant}
+          onClose={() => setToast({ show: false, variant: "", message: "" })}
+          show={toast.show}
+          delay={4000}
+          autohide
+        >
+          <Toast.Header>
+            <strong className="me-auto">Adidot</strong>
+            <small>just now</small>
+          </Toast.Header>
+          <Toast.Body className="text-white">{toast.message}</Toast.Body>
+        </Toast>
+      </ToastContainer>
     </>
   );
 }

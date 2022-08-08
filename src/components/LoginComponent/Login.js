@@ -57,23 +57,15 @@ export default function Login() {
     handleClose();
     axios
       .post(API_URL + `/trabajador`, datax)
-      .then((response) =>
-        setToast((toast) => ({
-          ...toast,
-          variant: "success",
-          message: "Usuario creado satisfactoriamente",
-          show: true,
-        }))
-      )
+      .then((response) => Toaster("success", response.data.message))
       .catch((error) => {
-        setToast((toast) => ({
-          ...toast,
-          variant: "danger",
-          message: "hubo un error creando el usuario",
-          show: true,
-        }));
+        Toaster("danger", "hubo un error creando el usuario");
       });
   };
+
+  function Toaster(variant, message) {
+    setToast({ show: true, variant: variant, message: message });
+  }
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -114,12 +106,7 @@ export default function Login() {
         });
       })
       .catch((error) => {
-        setToast((toast) => ({
-          ...toast,
-          variant: "danger",
-          message: "Los datos no concuerdan con nuestros registros",
-          show: true,
-        }));
+        Toaster("danger", "los Datos no concuerdan con nuestros registros");
         setLoading(false);
       });
   };
@@ -162,7 +149,12 @@ export default function Login() {
       <Form onSubmit={exit}>
         <h3 className="Login-title">{logData.login}</h3>
         <h4 className="Login-title">Rol: {logData.role} </h4>
-        <Button size="sm" className="Exit-button" type="submit">
+        <Button
+          size="sm"
+          variant="secondary"
+          className="Exit-button"
+          type="submit"
+        >
           {" "}
           Salir{" "}
         </Button>
@@ -217,14 +209,7 @@ export default function Login() {
       <ToastContainer position="bottom-end" className="p-3">
         <Toast
           bg={toast.variant}
-          onClose={() =>
-            setToast((toast) => ({
-              ...toast,
-              variant: "",
-              message: "",
-              show: false,
-            }))
-          }
+          onClose={() => setToast({ variant: "", message: "", show: false })}
           show={toast.show}
           delay={4000}
           autohide
