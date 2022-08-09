@@ -12,8 +12,8 @@ import {
   Toast,
   ToastContainer,
 } from "react-bootstrap";
-import { FaTrash } from "react-icons/fa";
-import { FaPlus } from "react-icons/fa";
+import { PulseLoader } from "react-spinners";
+import { FaTrash, FaPlus } from "react-icons/fa";
 import Constants from "../Constants";
 import { useLocation } from "wouter";
 import { v4 as uuidv4 } from "uuid";
@@ -32,18 +32,20 @@ export default function GroupScreen() {
     nombre: "Nuevo grupo...",
     items: [],
   };
-
+  // Route helpers
+  const { logData } = useContext(CredentialContext);
   const API_URL = "http://localhost:8000/api/";
   const [location, setLocation] = useLocation();
-  const { logData } = useContext(CredentialContext);
+  //loading and misc state helpers
   const [showCreateGroup, setShow] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [kill, setDelete] = useState(false);
   const [toast, setToast] = useState({
     variant: "",
     message: "",
     show: false,
   });
+  //groups States
   const [groupArray, setGroups] = useState({
     items: [],
     nombre: "user groups",
@@ -51,7 +53,9 @@ export default function GroupScreen() {
   const [groupConstant, setConstant] = useState(columnsFromBackend);
   const [newArray, setNewArray] = useState(ColumnsToBackend);
   const [allTrabajadores, setTrabajadores] = useState([]);
-  //memorized helper for group creation.
+  //visualization helper
+  let GroupView;
+  //memoized helper for group creation.
   let helperArray = useMemo(() => {
     let hA = Constants();
     if (newArray.items.length > 0) {
@@ -85,11 +89,11 @@ export default function GroupScreen() {
       .then((response) => {
         setGroups((groupArray) => ({
           ...groupArray,
-          items: [],
+          items: response.data,
         }));
         console.log(response);
       });
-  }, [location, logData.isLogged]);
+  }, [logData.isLogged, toast]);
 
   function Toaster(variant, message) {
     setToast({ show: true, variant: variant, message: message });
@@ -98,10 +102,10 @@ export default function GroupScreen() {
   const handleChange = (e) => {
     e.preventDefault();
     let filtered = [];
-    let search = e.target.search.value;
+    let search = e.target.search.value.toLowerCase();
     if (search !== "") {
       filtered = allTrabajadores.filter((str) =>
-        str.nombre.replace(/\s/g, "").includes(search)
+        str.nombre.toLowerCase().replace(/\s/g, "").includes(search)
       );
     }
     if (filtered.length > 0) {
@@ -138,12 +142,16 @@ export default function GroupScreen() {
     let headers = setHeaders();
     let formData = new FormData();
     formData.append("nombre", newArray.nombre);
-    console.log(newArray.items);
     formData.append("integrantes", JSON.stringify(newArray.items));
     formData.append("owner", logData.cedula);
-    axios.post(API_URL + "group", formData, { headers }).then((response) => {
-      Toaster("success", response.data.message);
-    });
+    axios
+      .post(API_URL + "group", formData, { headers })
+      .then((response) => {
+        Toaster("success", response.data.message);
+      })
+      .catch((error) => {
+        Toaster("danger", "Error al crear el grupo.");
+      });
     handleClose();
   };
 
@@ -189,6 +197,22 @@ export default function GroupScreen() {
     console.log(x);
   }
 
+  if (groupArray.items.length > 0) {
+    GroupView = groupArray.items.map(({ nombre, id }) => (
+      <li className="dli m-2">
+        {nombre}
+        <span
+          onClick={() => deleteGroup(id)}
+          className="Fa-edit-alt m-2 mt-0 mb-0"
+        >
+          <FaTrash></FaTrash>
+        </span>
+      </li>
+    ));
+  } else {
+    GroupView = "No tienes grupos personales aún...";
+  }
+
   return (
     <>
       <div className="Header-noticia m-3 mt-4 mb-0">
@@ -199,19 +223,11 @@ export default function GroupScreen() {
           <FaPlus></FaPlus>
         </span>
         <ul className=" ul-dp ">
-          {groupArray.items.length > 0
-            ? groupArray.items.map(({ nombre, id }) => (
-                <li className="dli">
-                  {nombre}
-                  <span
-                    onClick={deleteGroup(id)}
-                    className="Fa-edit-alt disabled"
-                  >
-                    <FaTrash></FaTrash>
-                  </span>
-                </li>
-              ))
-            : "No tienes grupos personales aún..."}
+          {loading ? (
+            <PulseLoader id="loader" color={"#eee"} loading={loading} />
+          ) : (
+            GroupView
+          )}
         </ul>
       </div>
       <Modal show={showCreateGroup} onHide={handleClose} centered size="lg">
@@ -221,7 +237,7 @@ export default function GroupScreen() {
         <Modal.Body>
           <DragDropContext onDragEnd={(result) => onDragEnd(result)}>
             <Row>
-              <Col> </Col>
+              <Col>{/*this is for spacing only*/}</Col>
               <Col style={{ textAlign: "center" }}>
                 <h4>
                   <Form.Control

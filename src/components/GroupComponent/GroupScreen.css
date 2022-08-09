@@ -11,7 +11,7 @@
     /* Firefox */
 }
 
-.dropeable-list::-webkit-scrollbar {
+.dropeable-list::-webkit-scrollbar, .ul-dp::-webkit-scrollbar {
     display: none;
 }
 
@@ -44,14 +44,19 @@
     display: inline-flex;
     flex-direction: row;
     flex-wrap: wrap;
-    /* align-items: center; */
     justify-content: space-around;
     align-content: center;
+    overflow-y: scroll;
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
 }
 
 .ul-dp>li,
 .dropeable-container>li {
     list-style: none;
+    width: 18rem;
 }
 
 .dropeable-list-item,.dli {
@@ -74,7 +79,7 @@
     background-color: rosybrown;
 }
 
-.dli:hover {
+.Fa-edit-alt:hover {
     background-color: #eee;
 }
 
