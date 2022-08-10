@@ -74,6 +74,7 @@ export default function GroupScreen() {
     if (!logData.isLogged) {
       setLocation("/");
     }
+    setLoading(true);
     let headers = setHeaders();
     axios.get(API_URL + "trabajador", { headers }).then((response) => {
       response.data.splice(0, 1);
@@ -83,7 +84,7 @@ export default function GroupScreen() {
       .get(API_URL + "group", {
         headers,
         params: {
-          trabajador: logData.cedula,
+          owner: logData.cedula,
         },
       })
       .then((response) => {
@@ -91,7 +92,11 @@ export default function GroupScreen() {
           ...groupArray,
           items: response.data,
         }));
-        console.log(response);
+        setLoading(false);
+      })
+      .catch((error) => {
+        Toaster("danger", "Error al cargar los grupos del usuario");
+        setLoading(false);
       });
   }, [logData.isLogged, toast]);
 
@@ -224,7 +229,7 @@ export default function GroupScreen() {
         </span>
         <ul className=" ul-dp ">
           {loading ? (
-            <PulseLoader id="loader" color={"#eee"} loading={loading} />
+            <PulseLoader id="loader" color={"#add8e6"} loading={loading} />
           ) : (
             GroupView
           )}

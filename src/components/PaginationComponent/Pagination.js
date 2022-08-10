@@ -1,22 +1,27 @@
-import {usePagination} from '../../Hooks/usePagination'
-import classnames from 'classnames'
+import { usePagination } from "../../Hooks/usePagination";
+import classnames from "classnames";
 import { IoIosArrowForward } from "react-icons/io";
-import './Pagination.css'
+import "./Pagination.css";
 
-export default function Pagination (props) {
-    const {
-      onPageChange,
-      totalCount,
-      siblingCount = 1,
-      currentPage,
-      pageSize,
-      className
-    } = props;
-    
-    const DOTS = '...';
+export default function Pagination(props) {
+  const {
+    onPageChange,
+    totalCount,
+    siblingCount = 1,
+    currentPage,
+    pageSize,
+    className,
+  } = props;
 
-    const paginationRange = usePagination({currentPage,totalCount,siblingCount, pageSize });
-     // If there are less than 2 times in pagination range we shall not render the component
+  const DOTS = "...";
+
+  const paginationRange = usePagination({
+    currentPage,
+    totalCount,
+    siblingCount,
+    pageSize,
+  });
+  // If there are less than 2 times in pagination range we shall not render the component
   if (currentPage === 0 || paginationRange.length < 2) {
     return null;
   }
@@ -31,27 +36,44 @@ export default function Pagination (props) {
 
   let lastPage = paginationRange[paginationRange.length - 1];
   return (
-    <ul className={classnames('pagination-container', { [className]: className })} >
-       {/* Left navigation arrow */}
-      <li className={classnames('pagination-item', { disabled: currentPage === 1 })} onClick={onPrevious}>
-        <IoIosArrowForward className='arrow left' />
+    <ul
+      className={classnames("pagination-container", { [className]: className })}
+    >
+      {/* Left navigation arrow */}
+      <li
+        className={classnames("pagination-item", {
+          disabled: currentPage === 1,
+        })}
+        onClick={onPrevious}
+      >
+        <IoIosArrowForward className="arrow left" />
       </li>
-      {paginationRange.map(pageNumber => {
+      {paginationRange.map((pageNumber) => {
         // If the pageItem is a DOT, render the DOTS unicode character
         if (pageNumber === DOTS) {
-            return <li className="pagination-item dots">&#8230;</li>;
+          return <li className="pagination-item dots">&#8230;</li>;
         }
         // Render our Page Pills
-            return (
-          <li className={classnames('pagination-item', { selected: pageNumber === currentPage })} onClick={() => onPageChange(pageNumber)} >
+        return (
+          <li
+            className={classnames("pagination-item", {
+              selected: pageNumber === currentPage,
+            })}
+            onClick={() => onPageChange(pageNumber)}
+          >
             {pageNumber}
           </li>
         );
       })}
       {/*  Right Navigation arrow */}
-      <li className={classnames('pagination-item', { disabled: currentPage === lastPage })} onClick={onNext} >
-        <IoIosArrowForward className='arrow' />
+      <li
+        className={classnames("pagination-item", {
+          disabled: currentPage === lastPage,
+        })}
+        onClick={onNext}
+      >
+        <IoIosArrowForward className="arrow" />
       </li>
     </ul>
   );
-};
+}

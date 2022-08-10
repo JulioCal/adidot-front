@@ -22,7 +22,8 @@ export default function NewDocument() {
   let current = new Date();
   const [location, setLocation] = useLocation();
   const { logData } = useContext(CredentialContext);
-  const [group, setGroup] = useState([]);
+  const API_URL = "http://localhost:8000/api/";
+  const [group, setGroup] = useState(Constants());
   const [showGroup, setShowGroup] = useState(false);
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState({ show: false, variant: "", message: "" });
@@ -38,19 +39,33 @@ export default function NewDocument() {
     if (!logData.isLogged) {
       setLocation("/");
     }
-    //inside else makes sure user is logged.
-    //axios gets all groups from database.
+    let headers = setHeaders();
     axios
-      .get("http://localhost:8000/api/groups", {
+      .get(API_URL + "group", {
+        headers,
         params: { owner: logData.cedula },
       })
-      .then((Response) => console.log(Response.data));
+      .then((Response) => {
+        console.log(Response.data);
+        setGroup([...Constants(), ...Response.data]);
+      })
+      .catch((err) => {
+        Toaster("danger", "Hubo un error inesperado recuperando los grupos.");
+      });
   }, [location]);
 
   function Toaster(variant, message) {
-    console.log("bandera");
     setToast({ show: true, variant: variant, message: message });
   }
+
+  const setHeaders = () => {
+    let token = window.sessionStorage.getItem("token");
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    };
+    return headers;
+  };
 
   const createDocument = (datax, e) => {
     e.preventDefault();
@@ -62,11 +77,11 @@ export default function NewDocument() {
     formData.append("trabajador_cedula", datax.trabajador_cedula);
     formData.append("text", datax.text);
     formData.append("permit", datax.permit);
-    formData.append("group", datax.group);
+    formData.append("grupos", JSON.stringify(datax.grupos));
     axios({
       headers: { "Content-Type": "multipart/form-data; charset=utf-8;" },
       method: "post",
-      url: `http://localhost:8000/api/document`,
+      url: API_URL + "document",
       data: formData,
     })
       .then((response) => {
@@ -171,10 +186,13 @@ export default function NewDocument() {
               {showGroup ? (
                 <>
                   <Form.Label>grupo</Form.Label>
-                  <Form.Select {...register("group")}>
-                    {group.map((groupUnit) => (
-                      <option>{groupUnit}</option>
-                    ))}
+                  <Form.Select {...register("grupos")}>
+                    {
+                      //poner aqui el beautiful dnd para seleccion multiple de grupos.
+                      group.map((groupUnit) => (
+                        <option>{groupUnit.nombre}</option>
+                      ))
+                    }
                   </Form.Select>
                 </>
               ) : null}
