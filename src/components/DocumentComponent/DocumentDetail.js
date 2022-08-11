@@ -8,8 +8,8 @@ import CredentialContext from "../../Contexts/CredentialContext";
 import { IoReturnUpBack } from "react-icons/io5";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { useLocation } from "wouter";
-import {ScaleLoader} from "react-spinners"
-import fileDownload from 'js-file-download'
+import { ScaleLoader } from "react-spinners";
+import fileDownload from "js-file-download";
 import axios from "axios";
 import "./Document.css";
 
@@ -21,7 +21,8 @@ export default function DetailedDocument(params) {
   const [location, setLocation] = useLocation();
   const { logData } = useContext(CredentialContext);
   let identification = params.params.id;
-  const doc = data.find((documento) => documento.id == identification);
+  const doc = data.find((documento) => documento.document_id == identification);
+  console.log(data);
 
   if (!doc || (doc.permit == "private" && !logData.isLogged)) {
     setLocation("/");
@@ -35,14 +36,17 @@ export default function DetailedDocument(params) {
   const Download = (evt) => {
     evt.preventDefault();
     setDownload(true);
-    axios.post(API_URL + "download", doc, {
-      responseType: 'blob',
-    }).then((response) => {
-      const filename = doc.title+'.'+doc.file.split('.').pop();
-      fileDownload(response.data, filename)
-    }).then((res) => {
-      setDownload(false);
-    });
+    axios
+      .post(API_URL + "download", doc, {
+        responseType: "blob",
+      })
+      .then((response) => {
+        const filename = doc.title + "." + doc.file.split(".").pop();
+        fileDownload(response.data, filename);
+      })
+      .then((res) => {
+        setDownload(false);
+      });
   };
   const editFile = (e) => {
     e.preventDefault();
@@ -52,18 +56,21 @@ export default function DetailedDocument(params) {
   const deleteFile = (e) => {
     e.preventDefault();
     let headers = setHeaders();
-    axios.delete(API_URL+`document/${doc.id}`,{headers}).then(response => setLocation('/'))
-  }
+    axios
+      .delete(API_URL + `document/${doc.document_id}`, { headers })
+      .then((response) => setLocation("/"));
+  };
 
   const setHeaders = () => {
-    if(window.sessionStorage.getItem('token') != null)
-    {let token = window.sessionStorage.getItem('token');
-    const headers = {
-                    Authorization: `Bearer ${token}`,
-                    Accept :'application/json', 
-                    }
-    return headers;}
-}
+    if (window.sessionStorage.getItem("token") != null) {
+      let token = window.sessionStorage.getItem("token");
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      };
+      return headers;
+    }
+  };
 
   return (
     <>
@@ -75,14 +82,14 @@ export default function DetailedDocument(params) {
           <h2 className="Titulo">{doc.title ? doc.title : null}</h2>
           <span className="Date">{doc.Date ? doc.Date : null}</span>
           {edit ? (
-              <>
-            <span className="Fa-edit" onClick={editFile}>
-              <FaEdit></FaEdit>
-            </span>
-            <span className="Fa-edit" onClick={deleteFile}>
+            <>
+              <span className="Fa-edit" onClick={editFile}>
+                <FaEdit></FaEdit>
+              </span>
+              <span className="Fa-edit">
                 <FaTrash></FaTrash>
               </span>
-              </>
+            </>
           ) : null}
         </div>
         <div className="Body-noticia">
@@ -94,18 +101,22 @@ export default function DetailedDocument(params) {
           <p className="Informacion">{doc.text ? doc.text : "No such File"}</p>
         </div>
         <div className="Footer-noticia">
-          {doc.file ? 
+          {doc.file ? (
             <Button
               className="Download-button"
               variant="success"
               disabled={downloading}
               onClick={Download}
             >
-              {downloading ? <ScaleLoader className="loader" height={20} color={"#FFF"} /> : 'Descarga'}
+              {downloading ? (
+                <ScaleLoader className="loader" height={20} color={"#FFF"} />
+              ) : (
+                "Descarga"
+              )}
             </Button>
-           : null}
+          ) : null}
           <span className="Footer-content">
-            documento: {doc.id ? doc.id : ""}
+            documento: {doc.document_id ? doc.document_id : ""}
           </span>
           <span className="Footer-content">
             autor: {doc.owner ? doc.owner : ""}
@@ -116,4 +127,3 @@ export default function DetailedDocument(params) {
     </>
   );
 }
-
