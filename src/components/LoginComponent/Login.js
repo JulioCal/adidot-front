@@ -206,13 +206,11 @@ export default function Login() {
 
   return (
     <>
-      <ToastContainer position="bottom-end" className="p-3">
+      <ToastContainer className="p-3">
         <Toast
           bg={toast.variant}
           onClose={() => setToast({ variant: "", message: "", show: false })}
           show={toast.show}
-          delay={4000}
-          autohide
         >
           <Toast.Header>
             <strong className="me-auto">Adidot</strong>
@@ -221,6 +219,7 @@ export default function Login() {
           <Toast.Body className="text-white">{toast.message}</Toast.Body>
         </Toast>
       </ToastContainer>
+
       <div className="Login">
         {loading ? (
           <PulseLoader id="loader" color={"#eee"} loading={loading} />

@@ -336,7 +336,7 @@ export default function GroupScreen() {
         </Modal.Footer>
       </Modal>
 
-      <ToastContainer position="bottom-end" className="p-3">
+      <ToastContainer className="p-3">
         <Toast
           bg={toast.variant}
           onClose={() => setToast({ show: false, variant: "", message: "" })}
