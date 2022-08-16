@@ -19,6 +19,7 @@
 }
 
 .Noticia:hover{
+    transition: .25s;
     cursor: pointer;
     background-color: white;
 }
@@ -44,7 +45,7 @@ input.titulo {
 
 .Header-noticia, .Footer-noticia {
     justify-content: space-between;
-    background-color: brown;
+    background-image: linear-gradient(0deg,rgba(121,9,9,1) 10%, brown 50%);
     display: flex;
     align-items: center;
     padding: .5rem;
@@ -86,9 +87,6 @@ textarea.Informacion {
     color: white;
     padding: 0.5rem;
     font-weight: 600;
-}
-.Footer-noticia > Button:active {
-    border: inset darkseagreen;
 }
 
 .Textborders {

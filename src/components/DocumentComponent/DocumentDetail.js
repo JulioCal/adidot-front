@@ -22,7 +22,6 @@ export default function DetailedDocument(params) {
   const { logData } = useContext(CredentialContext);
   let identification = params.params.id;
   const doc = data.find((documento) => documento.document_id == identification);
-  console.log(data);
 
   if (!doc || (doc.permit == "private" && !logData.isLogged)) {
     setLocation("/");
@@ -98,7 +97,9 @@ export default function DetailedDocument(params) {
             onError={(e) => (e.target.style.display = "none")}
             alt=""
           />
-          <p className="Informacion">{doc.text ? doc.text : "No such File"}</p>
+          <p className="Informacion">
+            {doc.text ? doc.text : "Esta publicación no tiene texto adjunto."}
+          </p>
         </div>
         <div className="Footer-noticia">
           {doc.file ? (
@@ -109,7 +110,7 @@ export default function DetailedDocument(params) {
               onClick={Download}
             >
               {downloading ? (
-                <ScaleLoader className="loader" height={20} color={"#FFF"} />
+                <ScaleLoader className="loader" height={20} color={"#f6f6f6"} />
               ) : (
                 "Descarga"
               )}

@@ -28,7 +28,9 @@ export default function Document({ id, title, img, text, owner }) {
           onError={(e) => (e.target.style.display = "none")}
           alt=""
         />
-        <p className="Informacion">{text}</p>
+        <p className="Informacion">
+          {text ? text : "Este documento no contiene texto adjunto"}
+        </p>
       </div>
       <div className="Footer-noticia">
         <span className="Footer-content">documento: {id} </span>

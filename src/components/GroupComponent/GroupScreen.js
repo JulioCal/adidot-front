@@ -148,7 +148,7 @@ export default function GroupScreen() {
     let formData = new FormData();
     formData.append("nombre", newArray.nombre);
     formData.append("integrantes", JSON.stringify(newArray.items));
-    formData.append("owner", logData.cedula);
+    formData.append("owner_grupo", logData.cedula);
     axios
       .post(API_URL + "group", formData, { headers })
       .then((response) => {

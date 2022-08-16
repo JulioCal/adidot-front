@@ -33,8 +33,9 @@ export default function NewDocument() {
   const [selectedGroup, setSelectedGroup] = useState({
     id: uuidv4(),
     items: [],
-    nombre: "grupos seleccionados",
+    nombre: "Grupos seleccionados",
   });
+  let [helperArray, setHelper] = useState([]);
   const [showGroup, setShowGroup] = useState(false);
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState({ show: false, variant: "", message: "" });
@@ -57,13 +58,16 @@ export default function NewDocument() {
         params: { owner: logData.cedula },
       })
       .then((Response) => {
-        console.log(Response.data);
-        setGroup({ items: [...Constants(), ...Response.data] });
+        setGroup((group) => ({
+          ...group,
+          items: [...Constants(), ...Response.data],
+        }));
+        setHelper(group.items);
       })
       .catch((err) => {
         Toaster("danger", "Hubo un error inesperado recuperando los grupos.");
       });
-  }, [location]);
+  }, [location, logData.isLogged]);
 
   function Toaster(variant, message) {
     setToast({ show: true, variant: variant, message: message });
@@ -82,7 +86,9 @@ export default function NewDocument() {
     e.preventDefault();
     setLoading(true);
     let formData = new FormData();
-    formData.append("file", datax.file[0]);
+    if (datax.file) {
+      formData.append("file", datax.file[0]);
+    }
     formData.append("owner", datax.owner);
     formData.append("title", datax.title);
     formData.append("trabajador_cedula", datax.trabajador_cedula);
@@ -101,7 +107,7 @@ export default function NewDocument() {
     })
       .then((response) => {
         Toaster("success", response.data.message);
-        reset();
+        resetForm();
         setLoading(false);
       })
       .catch((error) => {
@@ -109,12 +115,20 @@ export default function NewDocument() {
         setLoading(false);
       });
   };
+
   const showGroupInput = (option) => {
     if (option === "3") {
       setShowGroup(true);
     } else {
       setShowGroup(false);
     }
+  };
+
+  const resetForm = () => {
+    reset();
+    showGroupInput(null);
+    setSelectedGroup((group) => ({ ...group, items: [] }));
+    setGroup((group) => ({ ...group, items: helperArray }));
   };
 
   function onDragEnd(result, arrayFrom, sourcArray, arrayTo, destArray) {
@@ -231,19 +245,6 @@ export default function NewDocument() {
                 <option value="2">privado</option>
                 <option value="3">limitado</option>
               </Form.Control>
-              {showGroup ? (
-                <>
-                  <Form.Label>grupo</Form.Label>
-                  <Form.Select {...register("grupos")}>
-                    {
-                      //poner aqui el beautiful dnd para seleccion multiple de grupos.
-                      group.map((groupUnit) => (
-                        <option>{groupUnit.nombre}</option>
-                      ))
-                    }
-                  </Form.Select>
-                </>
-              ) : null}
             </Col>
             <Col className="Footer-content-end">
               <Stack direction="horizontal">
@@ -251,7 +252,7 @@ export default function NewDocument() {
                   <ScaleLoader
                     className="loader mt-3"
                     height={20}
-                    color={"#FFF"}
+                    color={"#f6f6f6"}
                   />
                 ) : (
                   <Button
@@ -266,101 +267,91 @@ export default function NewDocument() {
                 )}
               </Stack>
             </Col>
-          </Row>
-          <Row>
-            <DragDropContext onDragEnd={(result) => onDragEnd(result)}>
-              <Row>
-                <Col>{/*this is for spacing only*/}</Col>
-                <Col style={{ textAlign: "center" }}>
-                  <h4>
-                    <Form.Control
-                      className="m-3 mt-0 mb-0 controled-input-2"
-                      size="sm"
-                      value={selectedGroup.nombre}
-                      onChange={(e) =>
-                        setSelectedGroup((ga) => ({
-                          ...ga,
-                          nombre: e.target.value,
-                        }))
-                      }
-                      placeholder={selectedGroup.nombre}
-                    />
-                  </h4>
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <div className="dropeable-list">
-                    <Droppable droppableId={group.id}>
-                      {(provided) => (
-                        <ul
-                          className="dropeable-container"
-                          {...provided.droppableProps}
-                          ref={provided.innerRef}
-                        >
-                          {group.items.map(({ id, nombre }, index) => {
-                            return (
-                              <Draggable
-                                key={id}
-                                draggableId={id}
-                                index={index}
-                              >
-                                {(provided) => (
-                                  <li
-                                    className="dropeable-list-item"
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
+            {showGroup ? (
+              <Row className="mt-3">
+                <DragDropContext onDragEnd={(result) => onDragEnd(result)}>
+                  <Row>
+                    <Col style={{ textAlign: "justify" }}>
+                      <h4>{selectedGroup.nombre}</h4>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <div className="dropeable-list">
+                        <Droppable droppableId={group.id}>
+                          {(provided) => (
+                            <ul
+                              className="dropeable-container"
+                              {...provided.droppableProps}
+                              ref={provided.innerRef}
+                            >
+                              {group.items.map(({ id, nombre }, index) => {
+                                return (
+                                  <Draggable
+                                    key={id.toString()}
+                                    draggableId={nombre}
+                                    index={index}
                                   >
-                                    {nombre}
-                                  </li>
-                                )}
-                              </Draggable>
-                            );
-                          })}
-                          {provided.placeholder}
-                        </ul>
-                      )}
-                    </Droppable>
-                  </div>
-                </Col>
-                <Col>
-                  <div className="dropeable-list">
-                    <Droppable droppableId={selectedGroup.id}>
-                      {(provided) => (
-                        <ul
-                          className="dropeable-container"
-                          {...provided.droppableProps}
-                          ref={provided.innerRef}
-                        >
-                          {selectedGroup.items.map(({ id, nombre }, index) => {
-                            return (
-                              <Draggable
-                                key={id}
-                                draggableId={id}
-                                index={index}
-                              >
-                                {(provided) => (
-                                  <li
-                                    className="dropeable-list-item"
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                  >
-                                    {nombre}
-                                  </li>
-                                )}
-                              </Draggable>
-                            );
-                          })}
-                          {provided.placeholder}
-                        </ul>
-                      )}
-                    </Droppable>
-                  </div>
-                </Col>
+                                    {(provided) => (
+                                      <li
+                                        className="dropeable-list-item"
+                                        ref={provided.innerRef}
+                                        {...provided.draggableProps}
+                                        {...provided.dragHandleProps}
+                                      >
+                                        {nombre}
+                                      </li>
+                                    )}
+                                  </Draggable>
+                                );
+                              })}
+                              {provided.placeholder}
+                            </ul>
+                          )}
+                        </Droppable>
+                      </div>
+                    </Col>
+                    <Col>
+                      <div className="dropeable-list">
+                        <Droppable droppableId={selectedGroup.id}>
+                          {(provided) => (
+                            <ul
+                              className="dropeable-container"
+                              {...provided.droppableProps}
+                              ref={provided.innerRef}
+                            >
+                              {selectedGroup.items.map(
+                                ({ id, nombre }, index) => {
+                                  return (
+                                    <Draggable
+                                      key={id.toString()}
+                                      draggableId={nombre}
+                                      index={index}
+                                    >
+                                      {(provided) => (
+                                        <li
+                                          className="dropeable-list-item"
+                                          ref={provided.innerRef}
+                                          {...provided.draggableProps}
+                                          {...provided.dragHandleProps}
+                                        >
+                                          {nombre}
+                                        </li>
+                                      )}
+                                    </Draggable>
+                                  );
+                                }
+                              )}
+                              {provided.placeholder}
+                            </ul>
+                          )}
+                        </Droppable>
+                      </div>
+                    </Col>
+                  </Row>
+                </DragDropContext>
               </Row>
-            </DragDropContext>
+            ) : null}
           </Row>
         </Form>
       </div>

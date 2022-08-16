@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useMemo } from "react";
 import CredentialContext from "../../Contexts/CredentialContext";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import {
   Button,
   Form,
@@ -13,22 +14,34 @@ import {
 import DocsContext from "../../Contexts/DocumentContext";
 import { ScaleLoader } from "react-spinners";
 import { useForm } from "react-hook-form";
+import { IoReturnUpBack } from "react-icons/io5";
 import { useLocation } from "wouter";
+import Constants from "../Constants";
+import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import "./Document.css";
 
 export default function EditDocument(params) {
   //constantes de contexto y data de otros componentes.
   const { data } = useContext(DocsContext);
+  const API_URL = "http://localhost:8000/api/";
   const { logData, setLog } = useContext(CredentialContext);
-  const [group, setGroup] = useState([]); //get lista de grupos
 
   let current = new Date();
   let identification = params.params.id;
-  const doc = data.find((documento) => documento.id == identification);
+  const doc = data.find((documento) => documento.document_id == identification);
   const [selectedOption, setOption] = useState(1);
   const [location, setLocation] = useLocation();
-  const [file, setFile] = useState(null);
+  const [group, setGroup] = useState({
+    id: uuidv4(),
+    nombre: "Grupos disponibles",
+    items: Constants(),
+  });
+  const [selectedGroup, setSelectedGroup] = useState({
+    id: uuidv4(),
+    items: [],
+    nombre: "Grupos seleccionados",
+  });
 
   //constantes de visualizacion, formularios y alertas.
   const [showGroup, setShowGroup] = useState(false);
@@ -43,40 +56,87 @@ export default function EditDocument(params) {
     getValues,
     formState: { errors },
   } = useForm({ mode: "onBlur" });
+  let helperArray = useMemo(() => {
+    let hA = group.items;
+    if (selectedGroup.items.length > 0) {
+      for (let i = 0; i < selectedGroup.items.length; i++) {
+        for (let j = 0; j < hA.length; j++) {
+          if (selectedGroup.items[i].id === hA[j].id) {
+            hA.splice(j, 1);
+          }
+        }
+      }
+    }
+    return hA;
+  }, [selectedGroup, group]);
 
   useEffect(() => {
+    console.log(doc);
     if (!logData.isLogged || doc === undefined) {
       setLocation("/");
     }
     if (doc.permit === "private") {
       setOption(2);
     } else if (doc.permit === "limited") {
+      showGroupInput("3");
       setOption(3);
     }
+    let headers = setHeaders();
+    axios
+      .get(API_URL + "group", {
+        headers,
+        params: { owner: logData.cedula },
+      })
+      .then((Response) => {
+        setGroup((group) => ({
+          ...group,
+          items: [...Constants(), ...Response.data],
+        }));
+      })
+      .catch((err) => {
+        Toaster("danger", "Hubo un error inesperado recuperando los grupos.");
+      });
+    if (doc.grupos === null) {
+      doc.grupos = [];
+    }
+    setSelectedGroup((group) => ({ ...group, items: doc.grupos }));
     setTimeout(() => {
       reset({
         title: doc.title,
         text: doc.text,
       });
+      //setGroup((group) => ({ ...group, items: helperArray }));
     }, 500);
-  }, [reset]);
+  }, [reset, logData.isLogged]);
+
+  const setHeaders = () => {
+    let token = window.sessionStorage.getItem("token");
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    };
+    return headers;
+  };
 
   const updateDocument = (datax, e) => {
     e.preventDefault();
     setLoading(true);
     let formData = new FormData();
-    formData.append("file", datax.file[0]);
-    formData.append("owner", datax.owner);
+    if (datax.file) {
+      formData.append("file", datax.file[0]);
+    }
     formData.append("title", datax.title);
-    formData.append("trabajador_cedula", datax.trabajador_cedula);
     formData.append("text", datax.text);
     formData.append("permit", datax.permit);
-    formData.append("group", datax.group);
-      axios({
+    formData.append("_method", "PATCH");
+    if (datax.permit === "3") {
+      formData.append("grupos", JSON.stringify(selectedGroup.items));
+    } else {
+      formData.append("grupos", null);
+    }
+    axios
+      .post(API_URL + `document/${doc.document_id}`, formData, {
         headers: { "Content-Type": "multipart/form-data; charset=utf-8;" },
-        method: "patch",
-        url: `http://localhost:8000/api/document/${doc.id}`,
-        data: formData,
       })
       .then((response) => {
         Toaster("success", response.data.message);
@@ -101,6 +161,39 @@ export default function EditDocument(params) {
     }
   };
 
+  function onDragEnd(result, arrayFrom, sourcArray, arrayTo, destArray) {
+    if (!result.destination) return;
+    //for array of columns => columnsArray.find((column) => column.id === destination.id)
+    const { source, destination } = result;
+    if (source.droppableId === group.id) {
+      arrayFrom = group.items;
+      sourcArray = setGroup;
+    } else {
+      arrayFrom = selectedGroup.items;
+      sourcArray = setSelectedGroup;
+    }
+    if (destination.droppableId === group.id) {
+      arrayTo = group.items;
+      destArray = setGroup;
+    } else {
+      arrayTo = selectedGroup.items;
+      destArray = setSelectedGroup;
+    }
+    if (source.droppableId !== destination.droppableId) {
+      const sourcItems = Array.from(arrayFrom);
+      const destItems = Array.from(arrayTo);
+      const [removedItem] = sourcItems.splice(source.index, 1);
+      destItems.splice(destination.index, 0, removedItem);
+      sourcArray((groupArray) => ({ ...groupArray, items: sourcItems }));
+      destArray((selectedGroup) => ({ ...selectedGroup, items: destItems }));
+    } else {
+      const items = Array.from(arrayFrom);
+      const [reorderedItem] = items.splice(source.index, 1);
+      items.splice(destination.index, 0, reorderedItem);
+      sourcArray((groupArray) => ({ ...groupArray, items: items }));
+    }
+  }
+
   return (
     <>
       <ToastContainer position="bottom-end" className="p-3">
@@ -124,6 +217,12 @@ export default function EditDocument(params) {
             <Col>
               <Form.Group controlId="Name">
                 <Stack direction="horizontal">
+                  <span
+                    className="Fa-edit"
+                    onClick={() => window.history.go(-1)}
+                  >
+                    <IoReturnUpBack></IoReturnUpBack>
+                  </span>
                   <Form.Label>
                     <h4 className="h4 mt-2">Titulo : </h4>
                   </Form.Label>
@@ -180,21 +279,15 @@ export default function EditDocument(params) {
                 <option value="2">privado</option>
                 <option value="3">limitado</option>
               </Form.Control>
-              {showGroup ? (
-                <>
-                  <Form.Label>grupo</Form.Label>
-                  <Form.Select {...register("group")}>
-                    {group.map((groupUnit) => (
-                      <option>{groupUnit}</option>
-                    ))}
-                  </Form.Select>
-                </>
-              ) : null}
             </Col>
             <Col className="Footer-content-end">
               <Stack direction="horizontal">
                 {loading ? (
-                  <ScaleLoader className="loader mt-3" color={"#eee"} />
+                  <ScaleLoader
+                    className="loader mt-3"
+                    height={20}
+                    color={"#f6f6f6"}
+                  />
                 ) : (
                   <Button
                     variant="warning"
@@ -208,6 +301,91 @@ export default function EditDocument(params) {
                 )}
               </Stack>
             </Col>
+            {showGroup ? (
+              <Row className="mt-3">
+                <DragDropContext onDragEnd={(result) => onDragEnd(result)}>
+                  <Row>
+                    <Col style={{ textAlign: "justify" }}>
+                      <h4>{selectedGroup.nombre}</h4>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <div className="dropeable-list">
+                        <Droppable droppableId={group.id}>
+                          {(provided) => (
+                            <ul
+                              className="dropeable-container"
+                              {...provided.droppableProps}
+                              ref={provided.innerRef}
+                            >
+                              {helperArray.map(({ id, nombre }, index) => {
+                                return (
+                                  <Draggable
+                                    key={id.toString()}
+                                    draggableId={nombre}
+                                    index={index}
+                                  >
+                                    {(provided) => (
+                                      <li
+                                        className="dropeable-list-item"
+                                        ref={provided.innerRef}
+                                        {...provided.draggableProps}
+                                        {...provided.dragHandleProps}
+                                      >
+                                        {nombre}
+                                      </li>
+                                    )}
+                                  </Draggable>
+                                );
+                              })}
+                              {provided.placeholder}
+                            </ul>
+                          )}
+                        </Droppable>
+                      </div>
+                    </Col>
+                    <Col>
+                      <div className="dropeable-list">
+                        <Droppable droppableId={selectedGroup.id}>
+                          {(provided) => (
+                            <ul
+                              className="dropeable-container"
+                              {...provided.droppableProps}
+                              ref={provided.innerRef}
+                            >
+                              {selectedGroup.items.map(
+                                ({ id, nombre }, index) => {
+                                  return (
+                                    <Draggable
+                                      key={id.toString()}
+                                      draggableId={nombre}
+                                      index={index}
+                                    >
+                                      {(provided) => (
+                                        <li
+                                          className="dropeable-list-item"
+                                          ref={provided.innerRef}
+                                          {...provided.draggableProps}
+                                          {...provided.dragHandleProps}
+                                        >
+                                          {nombre}
+                                        </li>
+                                      )}
+                                    </Draggable>
+                                  );
+                                }
+                              )}
+                              {provided.placeholder}
+                            </ul>
+                          )}
+                        </Droppable>
+                      </div>
+                    </Col>
+                  </Row>
+                </DragDropContext>
+              </Row>
+            ) : null}
           </Row>
         </Form>
       </div>

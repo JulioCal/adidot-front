@@ -53,10 +53,14 @@
     /* Firefox */
 }
 
-.ul-dp>li,
-.dropeable-container>li {
+.ul-dp>li {
     list-style: none;
     width: 18rem;
+}
+
+.dropeable-container>li {
+    list-style:none;
+    width: inherit;
 }
 
 .dropeable-list-item,.dli {

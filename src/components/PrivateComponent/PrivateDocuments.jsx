@@ -45,7 +45,7 @@ export default function PrivateDocuments(){
           <>
             <div className='Galeria-noticias'>
           <PulseLoader id='loader' loading={loading} color={'#add8e6'} />
-          {currentData.map(({id,title,img,text,owner}) => <Document key={id} id={id} title={title} img={img} text={text} owner={owner} />)}
+          {currentData.map(({document_id,title,img,text,owner}) => <Document key={document_id} id={document_id} title={title} img={img} text={text} owner={owner} />)}
           <Pagination className="pagination-bar" currentPage={currentPage} totalCount={privateData.length} pageSize={PageSize} onPageChange={page => setCurrentPage(page)} />
             </div>
           </>
