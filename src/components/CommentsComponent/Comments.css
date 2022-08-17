@@ -1,4 +1,4 @@
-.Comments {
+.comments {
     width: auto;
     display: flex;
     flex-direction: column;
@@ -6,13 +6,17 @@
 .comment{
     text-decoration: none;
     text-align: justify;
-    padding: 0.5rem;
+    padding: 0.5rem 2rem;
     background-color: azure;
     font-size: medium;
     color: slategray;
     border: thin grey solid;
     border-bottom: none;
-    display: block;
+    display: flex;
+    justify-content: space-between;
+}
+.comment:last-child {
+    border-bottom: thin solid grey;
 }
 
 .comment-container {
@@ -24,11 +28,10 @@
     border-radius: 10px 10px 0px 0px;
 }
 .comment-container :last-child {
-    border-bottom: thin solid grey;
     border-radius: 0px 0px 10px 10px;
     }
 
-.Comment-text {
+.comment-text {
     width: 95%;
     border-radius: 5px;
     padding: 0.4rem;
@@ -36,11 +39,19 @@
     text-align: left;
 }
 
-.Comment-button {
+.comment-text-alt {
+    color: black;
+    overflow-wrap: anywhere;
+    text-align: left;
+    width: 70%;
+    align-self: center;
+}
+
+.comment-button {
     margin: .5rem 0px 0px 1rem;
     display: flex !important;
 }
 
-.Comment-button:active {
+.comment-button:active {
     border: inset darkseagreen;
 }

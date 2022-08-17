@@ -78,8 +78,8 @@ export default function DetailedDocument(params) {
           <span className="Fa-edit" onClick={() => window.history.go(-1)}>
             <IoReturnUpBack></IoReturnUpBack>
           </span>
-          <h2 className="Titulo">{doc.title ? doc.title : null}</h2>
-          <span className="Date">{doc.Date ? doc.Date : null}</span>
+          <h2 className="Titulo">{doc.title ? doc.title : ""}</h2>
+          <span className="Date">{doc.Date ? doc.Date : ""}</span>
           {edit ? (
             <>
               <span className="Fa-edit" onClick={editFile}>
@@ -93,7 +93,7 @@ export default function DetailedDocument(params) {
         </div>
         <div className="Body-noticia">
           <img
-            src={doc.img ? doc.img : null}
+            src={doc.img ? doc.img : ""}
             onError={(e) => (e.target.style.display = "none")}
             alt=""
           />
