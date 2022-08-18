@@ -37,16 +37,19 @@ export default function Display() {
         {loading ? (
           <PulseLoader id="loader" color={"#add8e6"} />
         ) : (
-          currentData.map(({ document_id, title, img, text, owner }) => (
-            <Document
-              key={document_id}
-              id={document_id}
-              title={title}
-              img={img}
-              text={text}
-              owner={owner}
-            />
-          ))
+          currentData.map(
+            ({ document_id, title, img, text, owner, created_at }) => (
+              <Document
+                key={document_id}
+                id={document_id}
+                title={title}
+                img={img}
+                date={new Date(created_at)}
+                text={text}
+                owner={owner}
+              />
+            )
+          )
         )}
       </div>
       <Pagination

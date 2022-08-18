@@ -52,6 +52,7 @@ input.titulo {
 }
 
 .Date {
+    display: flex;
     text-align: right;
     font-size: smaller;
     margin-left: auto;

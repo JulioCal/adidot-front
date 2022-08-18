@@ -54,6 +54,7 @@ export default function DetailedDocument(params) {
 
   const deleteFile = (e) => {
     e.preventDefault();
+    console.log("haha");
     let headers = setHeaders();
     axios
       .delete(API_URL + `document/${doc.document_id}`, { headers })
@@ -79,17 +80,29 @@ export default function DetailedDocument(params) {
             <IoReturnUpBack></IoReturnUpBack>
           </span>
           <h2 className="Titulo">{doc.title ? doc.title : ""}</h2>
-          <span className="Date">{doc.Date ? doc.Date : ""}</span>
-          {edit ? (
-            <>
-              <span className="Fa-edit" onClick={editFile}>
-                <FaEdit></FaEdit>
-              </span>
-              <span className="Fa-edit">
-                <FaTrash></FaTrash>
-              </span>
-            </>
-          ) : null}
+          <span className="Date">
+            <p class="stroke">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 72">
+                <text x="650" y="60">
+                  {doc.created_at
+                    ? new Date(doc.created_at).getDate() +
+                      "/" +
+                      (new Date(doc.created_at).getMonth() + 1)
+                    : ""}
+                </text>
+              </svg>
+            </p>
+            {edit ? (
+              <>
+                <span className="Fa-edit" onClick={editFile}>
+                  <FaEdit></FaEdit>
+                </span>
+                <span className="Fa-edit" onClick={deleteFile}>
+                  <FaTrash></FaTrash>
+                </span>
+              </>
+            ) : null}
+          </span>
         </div>
         <div className="Body-noticia">
           <img

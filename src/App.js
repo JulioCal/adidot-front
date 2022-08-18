@@ -1,18 +1,18 @@
-import './App.css';
-import { Route } from 'wouter';
-import { DocumentContextProvider } from './Contexts/DocumentContext';
-import {LoginContextProvider} from './Contexts/CredentialContext';
-import { DragDropContext } from 'react-beautiful-dnd';
-import PrivateDocument from './components/PrivateComponent/PrivateDocuments';
-import DocumentDetail from './components/DocumentComponent/DocumentDetail';
-import EditDocument from './components/DocumentComponent/EditDocument';
-import NewDocument from './components/DocumentComponent/NewDocument';
-import GroupScreen from './components/GroupComponent/GroupScreen';
-import Display from './components/DisplayComponent/Display';
-import Header from './components/HeaderComponent/Header';
-import Footer from './components/FooterComponent/Footer'
-import Login from './components/LoginComponent/Login';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "./App.css";
+import { Route } from "wouter";
+import { DocumentContextProvider } from "./Contexts/DocumentContext";
+import { LoginContextProvider } from "./Contexts/CredentialContext";
+import { DragDropContext } from "react-beautiful-dnd";
+import PrivateDocument from "./components/PrivateComponent/PrivateDocuments";
+import DocumentDetail from "./components/DocumentComponent/DocumentDetail";
+import EditDocument from "./components/DocumentComponent/EditDocument";
+import NewDocument from "./components/DocumentComponent/NewDocument";
+import GroupScreen from "./components/GroupComponent/GroupScreen";
+import Display from "./components/DisplayComponent/Display";
+import Header from "./components/HeaderComponent/Header";
+import Footer from "./components/FooterComponent/Footer";
+import Login from "./components/LoginComponent/Login";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
   // cuerpo principal de la app. aqui se importan los componentes y se renderizan por primera vez.

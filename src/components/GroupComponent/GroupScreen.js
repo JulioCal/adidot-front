@@ -14,7 +14,7 @@ import {
 } from "react-bootstrap";
 import { PulseLoader } from "react-spinners";
 import { FaTrash, FaPlus } from "react-icons/fa";
-import Constants from "../Constants";
+import Constants from "../Helpers/Constants";
 import { useLocation } from "wouter";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";

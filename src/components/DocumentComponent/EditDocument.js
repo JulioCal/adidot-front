@@ -16,7 +16,7 @@ import { ScaleLoader } from "react-spinners";
 import { useForm } from "react-hook-form";
 import { IoReturnUpBack } from "react-icons/io5";
 import { useLocation } from "wouter";
-import Constants from "../Constants";
+import Constants from "../Helpers/Constants";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import "./Document.css";

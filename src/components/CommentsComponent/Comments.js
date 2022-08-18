@@ -45,7 +45,7 @@ export default function Comments(params) {
   };
 
   function deleteComment(id) {
-    Toaster("Secondary", "Porfavor espere, estamos procesando su solicitud");
+    Toaster("secondary", "Porfavor espere, estamos procesando su solicitud");
     axios
       .delete(API_URL + `comment/${id}`)
       .then((response) => Toaster("success", "comentario eliminado"));
@@ -85,7 +85,7 @@ export default function Comments(params) {
           bg={toast.variant}
           onClose={() => setToast({ show: false, variant: "", message: "" })}
           show={toast.show}
-          delay={4000}
+          delay={10000}
           autohide
         >
           <Toast.Header>

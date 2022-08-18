@@ -15,7 +15,7 @@ import Document from "../DocumentComponent/Document";
 import DocumentContext from "../../Contexts/DocumentContext";
 import CredentialContext from "../../Contexts/CredentialContext";
 import { PulseLoader } from "react-spinners";
-import Constants from "../Constants";
+import Constants from "../Helpers/Constants";
 import axios from "axios";
 import "./Login.css";
 
@@ -147,8 +147,20 @@ export default function Login() {
   if (logData.isLogged) {
     loginScreen = (
       <Form onSubmit={exit}>
-        <h3 className="Login-title">{logData.login}</h3>
-        <h4 className="Login-title">Rol: {logData.role} </h4>
+        <p class="stroke">
+          <svg
+            style={{ height: "5rem" }}
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 600 180"
+          >
+            <text x="100" y="50">
+              {logData.login}
+            </text>
+            <text x="100" y="140">
+              Rol: {logData.role}
+            </text>
+          </svg>
+        </p>
         <Button
           size="sm"
           variant="secondary"
@@ -163,7 +175,7 @@ export default function Login() {
   } else {
     loginScreen = (
       <Form onSubmit={handleLogin}>
-        <h5 className="Login-title">Ingreso al sistema</h5>
+        <h5 className="Login-title mt-3 mb-2 ">Ingreso al sistema</h5>
         <Form.Control
           type="text"
           className="mb-2 login-input"
@@ -211,6 +223,8 @@ export default function Login() {
           bg={toast.variant}
           onClose={() => setToast({ variant: "", message: "", show: false })}
           show={toast.show}
+          delay={10000}
+          autohide
         >
           <Toast.Header>
             <strong className="me-auto">Adidot</strong>
@@ -227,12 +241,13 @@ export default function Login() {
           loginScreen
         )}
       </div>
-      {history.map(({ id, title, img, text, owner }) => (
+      {history.map(({ document_id, title, img, text, owner, created_at }) => (
         <Document
-          key={id}
-          id={id}
+          key={document_id}
+          id={document_id}
           title={title}
           img={img}
+          date={new Date(created_at)}
           text={text}
           owner={owner}
         />
