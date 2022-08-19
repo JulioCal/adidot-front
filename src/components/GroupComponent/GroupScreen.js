@@ -199,7 +199,10 @@ export default function GroupScreen() {
   }
 
   function deleteGroup(x) {
-    console.log(x);
+    Toaster("secondary", "estamos procesando su solicitud...");
+    axios
+      .delete(API_URL + `group/${x}`)
+      .then((response) => Toaster("success", response.data.message));
   }
 
   if (groupArray.items.length > 0) {
@@ -332,7 +335,10 @@ export default function GroupScreen() {
           </DragDropContext>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={CreateNewGroup}> Crear nuevo grupo </Button>
+          <Button onClick={CreateNewGroup} variant="success">
+            {" "}
+            Crear nuevo grupo{" "}
+          </Button>
         </Modal.Footer>
       </Modal>
 

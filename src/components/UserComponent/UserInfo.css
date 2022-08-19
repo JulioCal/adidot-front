@@ -1,0 +1,15 @@
+.Body-noticia-alt {
+    background-color: #eee;
+}
+
+.Col-alt {
+    text-align: left;
+    margin: 0.5rem;
+}
+.gone {
+    display:none;
+}
+
+.transparent {
+    background-color: transparent;
+}

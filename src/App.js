@@ -9,6 +9,7 @@ import EditDocument from "./components/DocumentComponent/EditDocument";
 import NewDocument from "./components/DocumentComponent/NewDocument";
 import GroupScreen from "./components/GroupComponent/GroupScreen";
 import Display from "./components/DisplayComponent/Display";
+import UserInfo from "./components/UserComponent/UserInfo";
 import Header from "./components/HeaderComponent/Header";
 import Footer from "./components/FooterComponent/Footer";
 import Login from "./components/LoginComponent/Login";
@@ -30,7 +31,7 @@ function App() {
                 <Route path="/new-document" component={NewDocument} />
                 <Route path="/groups" component={GroupScreen} />
                 <Route path="/document-list" component={PrivateDocument} />
-                <Route path="/personal-data" />
+                <Route path="/personal-data" component={UserInfo} />
               </div>
               <div className="Second-segment">
                 <Login />

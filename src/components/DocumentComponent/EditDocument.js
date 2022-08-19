@@ -53,7 +53,6 @@ export default function EditDocument(params) {
     handleSubmit,
     setValue,
     reset,
-    getValues,
     formState: { errors },
   } = useForm({ mode: "onBlur" });
   let helperArray = useMemo(() => {
