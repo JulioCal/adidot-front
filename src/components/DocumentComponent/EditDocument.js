@@ -104,7 +104,6 @@ export default function EditDocument(params) {
         title: doc.title,
         text: doc.text,
       });
-      //setGroup((group) => ({ ...group, items: helperArray }));
     }, 500);
   }, [reset, logData.isLogged]);
 

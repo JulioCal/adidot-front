@@ -11,6 +11,8 @@ import {
   Col,
   Toast,
   ToastContainer,
+  OverlayTrigger,
+  Tooltip,
 } from "react-bootstrap";
 import { PulseLoader } from "react-spinners";
 import { FaTrash, FaPlus } from "react-icons/fa";
@@ -207,15 +209,23 @@ export default function GroupScreen() {
 
   if (groupArray.items.length > 0) {
     GroupView = groupArray.items.map(({ nombre, id }) => (
-      <li className="dli m-2">
-        {nombre}
-        <span
-          onClick={() => deleteGroup(id)}
-          className="Fa-edit-alt m-2 mt-0 mb-0"
-        >
-          <FaTrash></FaTrash>
-        </span>
-      </li>
+      <OverlayTrigger
+        placement="right"
+        overlay={<Tooltip id="button-tooltip-2">click para borrar!</Tooltip>}
+      >
+        {({ ref, ...triggerHandler }) => (
+          <li className="dli m-2" {...triggerHandler}>
+            {nombre}
+            <span
+              ref={ref}
+              onClick={() => deleteGroup(id)}
+              className="Fa-edit-alt m-2 mt-0 mb-0"
+            >
+              <FaTrash></FaTrash>
+            </span>
+          </li>
+        )}
+      </OverlayTrigger>
     ));
   } else {
     GroupView = "No tienes grupos personales aún...";

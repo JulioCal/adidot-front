@@ -1,7 +1,7 @@
 /* eslint-disable eqeqeq */
 /* eslint-disable no-unused-vars */
 import React, { useContext, useEffect, useState } from "react"; //eslint-disable-line
-import Button from "react-bootstrap/Button";
+import { Button, OverlayTrigger, Tooltip } from "react-bootstrap";
 import Comments from "../CommentsComponent/Comments";
 import DocsContext from "../../Contexts/DocumentContext";
 import CredentialContext from "../../Contexts/CredentialContext";
@@ -97,9 +97,23 @@ export default function DetailedDocument(params) {
                 <span className="Fa-edit" onClick={editFile}>
                   <FaEdit></FaEdit>
                 </span>
-                <span className="Fa-edit" onClick={deleteFile}>
-                  <FaTrash></FaTrash>
-                </span>
+                <OverlayTrigger
+                  placement="right"
+                  overlay={
+                    <Tooltip id="button-tooltip-2">click para borrar!</Tooltip>
+                  }
+                >
+                  {({ ref, ...triggerHandler }) => (
+                    <span
+                      {...triggerHandler}
+                      ref={ref}
+                      onClick={deleteFile}
+                      className="Fa-edit"
+                    >
+                      <FaTrash></FaTrash>
+                    </span>
+                  )}
+                </OverlayTrigger>
               </>
             ) : null}
           </span>

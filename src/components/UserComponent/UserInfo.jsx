@@ -18,11 +18,9 @@ export default function UserInfo() {
   const [edit, setEdit] = useState(false);
   const {
     register,
-    onChange,
     handleSubmit,
-    setValue,
     getValues,
-    formState: { errors },
+    formState: { errors, isDirty, isValid },
   } = useForm({ mode: "onBlur" });
 
   function Toaster(variant, message) {
@@ -48,9 +46,41 @@ export default function UserInfo() {
     }
   }, [logData.isLogged]);
 
-  const updateUserdata = (e, data) => {
+  const updateUserdata = (datax, e) => {
     e.preventDefault();
-    console.log("actualizar datos");
+    setLoad(true);
+    let headers = setHeaders();
+    let formData = new FormData();
+    if (datax.password !== undefined || datax.password !== null) {
+      formData.append("password", datax.password);
+    }
+    if (datax.nombre !== undefined) {
+      formData.append("nombre", datax.nombre);
+    }
+    if (datax.direccion !== undefined) {
+      formData.append("direccion", datax.direccion);
+    }
+    if (datax.email !== undefined) {
+      formData.append("email", datax.email);
+    }
+
+    formData.append("_method", "PATCH");
+    axios
+      .post(API_URL + `trabajador/${logData.cedula}`, formData, {
+        headers,
+      })
+      .then((response) => {
+        Toaster("success", response.data.message);
+        setLoad(false);
+      })
+      .catch((err) => {
+        Toaster("danger", err.message);
+        setLoad(false);
+      });
+  };
+
+  const onError = (e) => {
+    Toaster("danger", "El formulario no puede proceder con errores ");
   };
 
   const setHeaders = () => {
@@ -77,7 +107,8 @@ export default function UserInfo() {
             <FaEdit></FaEdit>
           </span>
         </div>
-        <Form onSubmit={handleSubmit(updateUserdata)}>
+        <Form onSubmit={handleSubmit(updateUserdata, onError)}>
+          <Form.Control type="hidden" value="PATCH" {...register("_method")} />
           <div className="Body-noticia-alt p-2">
             <Row>
               <Col className="Col-alt">
@@ -136,7 +167,10 @@ export default function UserInfo() {
                   disabled={edit ? false : true}
                   className={edit ? "" : "transparent"}
                   defaultValue={userInfo.email}
-                  {...register("email")}
+                  {...register("email", {
+                    pattern:
+                      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                  })}
                 />
               </Col>
             </Row>
@@ -147,6 +181,7 @@ export default function UserInfo() {
                   <Form.Control
                     type="password"
                     placeholder="*******"
+                    defaultValue={undefined}
                     {...register("password")}
                     onKeyPress={(event) => {
                       if (!/[a-zA-Z0-9!@#$%\^&*)(+=._-]*$/.test(event.key)) {
@@ -160,8 +195,8 @@ export default function UserInfo() {
                   <Form.Control
                     type="password"
                     placeholder="*******"
+                    defaultValue={undefined}
                     {...register("passwordConfirm", {
-                      required: "porfavor verifique la contraseña",
                       validate: {
                         matchesPreviousPassword: (value) => {
                           const { password } = getValues();
@@ -173,6 +208,11 @@ export default function UserInfo() {
                       },
                     })}
                   />
+                  {errors.passwordConfirm && (
+                    <span className="Error">
+                      Las contraseñas no son iguales*{" "}
+                    </span>
+                  )}
                 </Col>
               </Row>
             ) : null}
@@ -192,8 +232,17 @@ export default function UserInfo() {
           </div>
           <div className="Footer-noticia">
             {edit ? (
-              <Button type="submit" variant="success">
-                Actualizar datos
+              <Button
+                type="submit"
+                disabled={!isDirty || !isValid}
+                className="p-2"
+                variant="success"
+              >
+                {loading ? (
+                  <ScaleLoader height={10} color={"#efefef"} />
+                ) : (
+                  "Actualizar datos"
+                )}
               </Button>
             ) : null}
           </div>
@@ -204,7 +253,7 @@ export default function UserInfo() {
           bg={toast.variant}
           onClose={() => setToast({ show: false, variant: "", message: "" })}
           show={toast.show}
-          delay={4000}
+          delay={10000}
           autohide
         >
           <Toast.Header>
