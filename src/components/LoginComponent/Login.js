@@ -17,6 +17,7 @@ import CredentialContext from "../../Contexts/CredentialContext";
 import { PulseLoader } from "react-spinners";
 import Constants from "../Helpers/Constants";
 import axios from "axios";
+import { useLocation } from "wouter";
 import "./Login.css";
 
 export default function Login() {
@@ -25,6 +26,7 @@ export default function Login() {
   const API_URL = `http://localhost:8000/api`;
   let loginScreen;
   const [Gerencias] = useState(Constants);
+  const [location, pushLocation] = useLocation();
   //data states
   const { data, updateData } = useContext(DocumentContext);
   const { logData, setLog } = useContext(CredentialContext);
@@ -136,7 +138,7 @@ export default function Login() {
 
   const handleRecovery = (e) => {
     e.preventDefault();
-    //go to recovery component
+    pushLocation("/recovery");
   };
 
   const handleChange = (e) => {

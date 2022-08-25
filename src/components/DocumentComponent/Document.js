@@ -18,11 +18,6 @@ export default function Document({ id, title, img, text, owner, date }) {
         <h3 className="Titulo">{title}</h3>
       </div>
       <div className="Body-noticia">
-        <img
-          src={img}
-          onError={(e) => (e.target.style.display = "none")}
-          alt=""
-        />
         <p className="Informacion">
           {text ? text : "Este documento no contiene texto adjunto"}
         </p>

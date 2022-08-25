@@ -5,9 +5,11 @@ import { LoginContextProvider } from "./Contexts/CredentialContext";
 import { DragDropContext } from "react-beautiful-dnd";
 import PrivateDocument from "./components/PrivateComponent/PrivateDocuments";
 import DocumentDetail from "./components/DocumentComponent/DocumentDetail";
+import PasswordReset from "./components/RecoveryComponent/PasswordReset";
 import EditDocument from "./components/DocumentComponent/EditDocument";
 import NewDocument from "./components/DocumentComponent/NewDocument";
 import GroupScreen from "./components/GroupComponent/GroupScreen";
+import Recovery from "./components/RecoveryComponent/Recovery";
 import Display from "./components/DisplayComponent/Display";
 import UserInfo from "./components/UserComponent/UserInfo";
 import Header from "./components/HeaderComponent/Header";
@@ -24,6 +26,8 @@ function App() {
           <Header />
           <DragDropContext>
             <section className="App-content">
+              <Route path="/recovery" component={Recovery} />
+              <Route path="/password/reset/:token" component={PasswordReset} />
               <div className="First-segment">
                 <Route path="/" component={Display} />
                 <Route path="/documents/:id" component={DocumentDetail} />

@@ -24,6 +24,7 @@
 }
 
 .Fa-edit-alt {
+    width:fit-content;
     padding: 0.2rem 0.6rem;
     color: brown;
     display: flex;
