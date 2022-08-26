@@ -27,7 +27,6 @@ export default function EditDocument(params) {
   const API_URL = "http://localhost:8000/api/";
   const { logData, setLog } = useContext(CredentialContext);
 
-  let current = new Date();
   let identification = params.params.id;
   const doc = data.find((documento) => documento.document_id == identification);
   const [selectedOption, setOption] = useState(1);
@@ -71,40 +70,41 @@ export default function EditDocument(params) {
 
   useEffect(() => {
     console.log(doc);
-    if (!logData.isLogged || doc === undefined) {
+    if (!doc || !logData.isLogged) {
       setLocation("/");
+    } else {
+      if (doc.permit === "private") {
+        setOption(2);
+      } else if (doc.permit === "limited") {
+        showGroupInput("3");
+        setOption(3);
+      }
+      let headers = setHeaders();
+      axios
+        .get(API_URL + "group", {
+          headers,
+          params: { owner: logData.cedula },
+        })
+        .then((Response) => {
+          setGroup((group) => ({
+            ...group,
+            items: [...Constants(), ...Response.data],
+          }));
+        })
+        .catch((err) => {
+          Toaster("danger", "Hubo un error inesperado recuperando los grupos.");
+        });
+      if (doc.grupos === null) {
+        doc.grupos = [];
+      }
+      setSelectedGroup((group) => ({ ...group, items: doc.grupos }));
+      setTimeout(() => {
+        reset({
+          title: doc.title,
+          text: doc.text,
+        });
+      }, 500);
     }
-    if (doc.permit === "private") {
-      setOption(2);
-    } else if (doc.permit === "limited") {
-      showGroupInput("3");
-      setOption(3);
-    }
-    let headers = setHeaders();
-    axios
-      .get(API_URL + "group", {
-        headers,
-        params: { owner: logData.cedula },
-      })
-      .then((Response) => {
-        setGroup((group) => ({
-          ...group,
-          items: [...Constants(), ...Response.data],
-        }));
-      })
-      .catch((err) => {
-        Toaster("danger", "Hubo un error inesperado recuperando los grupos.");
-      });
-    if (doc.grupos === null) {
-      doc.grupos = [];
-    }
-    setSelectedGroup((group) => ({ ...group, items: doc.grupos }));
-    setTimeout(() => {
-      reset({
-        title: doc.title,
-        text: doc.text,
-      });
-    }, 500);
   }, [reset, logData.isLogged]);
 
   const setHeaders = () => {
@@ -199,7 +199,7 @@ export default function EditDocument(params) {
           bg={toast.variant}
           onClose={() => setToast({ show: false, variant: "", message: "" })}
           show={toast.show}
-          delay={4000}
+          delay={10000}
           autohide
         >
           <Toast.Header>
@@ -228,8 +228,13 @@ export default function EditDocument(params) {
                     className="titulo"
                     type="text"
                     size="sm"
-                    {...register("title")}
+                    {...register("title", { required: true })}
                   />
+                  {errors.title && (
+                    <span className="Error">
+                      Este campo no puede estar vacío.*
+                    </span>
+                  )}
                 </Stack>
               </Form.Group>
             </Col>
@@ -237,7 +242,9 @@ export default function EditDocument(params) {
               <p class="stroke">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 72">
                   <text x="650" y="60">
-                    {current.getDate() + "/" + (current.getMonth() + 1)}
+                    {new Date(doc.created_at).getDate() +
+                      "/" +
+                      (new Date(doc.created_at).getMonth() + 1)}
                   </text>
                 </svg>
               </p>
@@ -259,7 +266,7 @@ export default function EditDocument(params) {
             <Col className="Col-text">
               <Form.Group controlId="formFileSm" className="mb-2">
                 <Form.Label>Adjuntar Archivo</Form.Label>
-                <Form.Control type="file" size="sm" />
+                <Form.Control type="file" size="sm" {...register("file")} />
               </Form.Group>
             </Col>
             <Col className="Col-text">

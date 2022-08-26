@@ -194,10 +194,12 @@ export default function NewDocument() {
                   <Form.Control
                     className="titulo"
                     type="text"
-                    maxLength="34"
                     size="sm"
                     {...register("title", { required: true })}
                   />
+                  {errors.title && (
+                    <span className="Error">Este campo es requerido.*</span>
+                  )}
                 </Stack>
               </Form.Group>
             </Col>
@@ -361,7 +363,7 @@ export default function NewDocument() {
           bg={toast.variant}
           onClose={() => setToast({ show: false, variant: "", message: "" })}
           show={toast.show}
-          delay={4000}
+          delay={10000}
           autohide
         >
           <Toast.Header>

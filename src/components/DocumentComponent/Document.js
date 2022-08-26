@@ -15,7 +15,9 @@ export default function Document({ id, title, img, text, owner, date }) {
   return (
     <div className="Noticia" onClick={documentDetail}>
       <div className="Header-noticia">
-        <h3 className="Titulo">{title}</h3>
+        <h3 className="Titulo">
+          {title.length > 28 ? title.slice(0, 24) + ". . ." : title}
+        </h3>
       </div>
       <div className="Body-noticia">
         <p className="Informacion">

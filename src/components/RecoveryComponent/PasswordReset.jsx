@@ -1,4 +1,12 @@
-import { Card, Form, Button, Row, Col } from "react-bootstrap";
+import {
+  Card,
+  Form,
+  Button,
+  Row,
+  Col,
+  Toast,
+  ToastContainer,
+} from "react-bootstrap";
 import { IoReturnUpBack } from "react-icons/io5";
 import { useState } from "react";
 import { useLocation } from "wouter";
@@ -10,6 +18,7 @@ export default function PasswordReset(params) {
   const API_URL = "http://localhost:8000/api/";
   const [sent, setResponse] = useState(false);
   const [location, pushLocation] = useLocation();
+  const [toast, setToast] = useState({ show: false, variant: "", message: "" });
   const {
     register,
     handleSubmit,
@@ -20,16 +29,45 @@ export default function PasswordReset(params) {
 
   const sendEmail = (data, e) => {
     e.preventDefault();
-    console.log(params.params.token);
     let formData = new FormData();
-    formData.append('password', data.password);
-    formData.append('token', params.params.token);
+    formData.append("password", data.password);
+    formData.append("token", params.params.token);
+    axios
+      .post(API_URL + "trabajador/password/reset", formData)
+      .then((response) => {
+        Toaster("success", response.data.message);
+        setTimeout(() => {
+          pushLocation("/");
+        }, 3000);
+      })
+      .catch((err) => {
+        Toaster("danger", "El token ya ha sido utilizado o expirado");
+      });
     setResponse(true);
     reset();
   };
 
+  function Toaster(variant, message) {
+    setToast({ show: true, variant: variant, message: message });
+  }
+
   return (
     <>
+      <ToastContainer className="p-3" style={{ zIndex: "3" }}>
+        <Toast
+          bg={toast.variant}
+          onClose={() => setToast({ show: false, variant: "", message: "" })}
+          show={toast.show}
+          delay={10000}
+          autohide
+        >
+          <Toast.Header>
+            <strong className="me-auto">Adidot</strong>
+            <small>just now</small>
+          </Toast.Header>
+          <Toast.Body className="text-white">{toast.message}</Toast.Body>
+        </Toast>
+      </ToastContainer>
       <div className="recovery-container">
         <Card>
           <Form onSubmit={handleSubmit(sendEmail)}>
