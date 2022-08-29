@@ -240,8 +240,8 @@ export default function EditDocument(params) {
             </Col>
             <Col>
               <p class="stroke">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 72">
-                  <text x="650" y="60">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 72">
+                  <text x="0" y="60">
                     {new Date(doc.created_at).getDate() +
                       "/" +
                       (new Date(doc.created_at).getMonth() + 1)}

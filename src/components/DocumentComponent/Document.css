@@ -63,6 +63,7 @@ input.titulo {
     text-align: start;
     margin: 0%;
     width: 90%;
+    overflow-wrap: anywhere;
 }
 
 textarea.Informacion {

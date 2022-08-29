@@ -358,7 +358,7 @@ export default function GroupScreen() {
           bg={toast.variant}
           onClose={() => setToast({ show: false, variant: "", message: "" })}
           show={toast.show}
-          delay={4000}
+          delay={10000}
           autohide
         >
           <Toast.Header>

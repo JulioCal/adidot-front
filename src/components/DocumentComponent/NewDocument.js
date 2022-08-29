@@ -205,8 +205,8 @@ export default function NewDocument() {
             </Col>
             <Col>
               <p class="stroke">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 72">
-                  <text x="650" y="60">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 72">
+                  <text x="0" y="60">
                     {current.getDate() + "/" + (current.getMonth() + 1)}
                   </text>
                 </svg>

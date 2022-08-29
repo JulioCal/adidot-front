@@ -1,7 +1,13 @@
 /* eslint-disable eqeqeq */
 /* eslint-disable no-unused-vars */
 import React, { useContext, useEffect, useState } from "react";
-import { Button, OverlayTrigger, Tooltip } from "react-bootstrap";
+import {
+  Button,
+  OverlayTrigger,
+  Tooltip,
+  Toast,
+  ToastContainer,
+} from "react-bootstrap";
 import Comments from "../CommentsComponent/Comments";
 import DocsContext from "../../Contexts/DocumentContext";
 import CredentialContext from "../../Contexts/CredentialContext";
@@ -19,6 +25,7 @@ export default function DetailedDocument(params) {
   const [downloading, setDownload] = useState(false);
   const [edit, toggleEdit] = useState(false);
   const [location, setLocation] = useLocation();
+  const [toast, setToast] = useState({ show: false, variant: "", message: "" });
   const { logData } = useContext(CredentialContext);
   let identification = params.params.id;
   const doc = data.find((documento) => documento.document_id == identification);
@@ -54,11 +61,16 @@ export default function DetailedDocument(params) {
 
   const deleteFile = (e) => {
     e.preventDefault();
+    Toaster("secondary", "estamos procesando su solicitud...");
     let headers = setHeaders();
     axios
       .delete(API_URL + `document/${doc.document_id}`, { headers })
       .then((response) => setLocation("/"));
   };
+
+  function Toaster(variant, message) {
+    setToast({ show: true, variant: variant, message: message });
+  }
 
   const setHeaders = () => {
     if (window.sessionStorage.getItem("token") != null) {
@@ -73,6 +85,21 @@ export default function DetailedDocument(params) {
 
   return (
     <>
+      <ToastContainer className="p-3">
+        <Toast
+          bg={toast.variant}
+          onClose={() => setToast({ show: false, variant: "", message: "" })}
+          show={toast.show}
+          delay={10000}
+          autohide
+        >
+          <Toast.Header>
+            <strong className="me-auto">Adidot</strong>
+            <small>just now</small>
+          </Toast.Header>
+          <Toast.Body className="text-white">{toast.message}</Toast.Body>
+        </Toast>
+      </ToastContainer>
       <div className="Noticia-detalle">
         <div className="Header-noticia">
           <span className="Fa-edit" onClick={() => window.history.go(-1)}>
@@ -81,8 +108,8 @@ export default function DetailedDocument(params) {
           <h2 className="Titulo">{doc.title ? doc.title : ""}</h2>
           <span className="Date">
             <p class="stroke">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 72">
-                <text x="650" y="60">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 72">
+                <text x="0" y="60">
                   {doc.created_at
                     ? new Date(doc.created_at).getDate() +
                       "/" +
