@@ -158,7 +158,7 @@ export default function Login() {
             <text x="100" y="50">
               {logData.login}
             </text>
-            <text x="100" y="140">
+            <text x="20" y="140">
               Rol: {logData.role}
             </text>
           </svg>

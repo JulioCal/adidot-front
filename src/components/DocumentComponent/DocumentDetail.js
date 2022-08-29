@@ -34,7 +34,10 @@ export default function DetailedDocument(params) {
     setLocation("/");
   }
   useEffect(() => {
-    if (doc.trabajador_cedula === logData.cedula) {
+    if (
+      doc.trabajador_cedula === logData.cedula ||
+      logData.role === "Administrador"
+    ) {
       toggleEdit(true);
     }
   }, [logData.cedula]);

@@ -52,7 +52,10 @@ export default function Comments(params) {
   }
 
   useEffect(() => {
-    if (doc.trabajador_cedula === logData.cedula) {
+    if (
+      doc.trabajador_cedula === logData.cedula ||
+      logData.role === "Administrador"
+    ) {
       toggleEdit(true);
     }
     axios
