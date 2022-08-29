@@ -15,11 +15,13 @@
 
 .App-title {
     width: 15rem;
+    height: calc(40px + 10vh);
     overflow-wrap: anywhere;
     text-align: left;
-    font-size: 1.5rem;
+    font-size: 1rem;
+    position: relative;
     color: rgb(0, 0, 0);
-    padding: 0 1rem;
+    padding: 1.5rem 1rem 0;
 }
 
 .Header-content {
