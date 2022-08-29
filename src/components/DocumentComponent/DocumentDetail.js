@@ -1,6 +1,6 @@
 /* eslint-disable eqeqeq */
 /* eslint-disable no-unused-vars */
-import React, { useContext, useEffect, useState } from "react"; //eslint-disable-line
+import React, { useContext, useEffect, useState } from "react";
 import { Button, OverlayTrigger, Tooltip } from "react-bootstrap";
 import Comments from "../CommentsComponent/Comments";
 import DocsContext from "../../Contexts/DocumentContext";
@@ -54,7 +54,6 @@ export default function DetailedDocument(params) {
 
   const deleteFile = (e) => {
     e.preventDefault();
-    console.log("haha");
     let headers = setHeaders();
     axios
       .delete(API_URL + `document/${doc.document_id}`, { headers })

@@ -202,8 +202,9 @@ export default function GroupScreen() {
 
   function deleteGroup(x) {
     Toaster("secondary", "estamos procesando su solicitud...");
+    let headers = setHeaders();
     axios
-      .delete(API_URL + `group/${x}`)
+      .delete(API_URL + `group/${x}`, { headers })
       .then((response) => Toaster("success", response.data.message));
   }
 
