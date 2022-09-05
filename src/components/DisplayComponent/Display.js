@@ -2,11 +2,13 @@ import { useEffect, useState, useContext, useMemo } from "react";
 import DocsContext from "../../Contexts/DocumentContext";
 import Document from "../DocumentComponent/Document";
 import { PulseLoader } from "react-spinners";
+import ResponsiveArticle from "./Skeleton";
 import Pagination from "../PaginationComponent/Pagination";
 import "./Display.css";
 
 export default function Display() {
   //Galeria donde se exhiben los nuevos documentos y notificaciones.
+  let displayScreen;
   const { data } = useContext(DocsContext);
   const [loading, setLoading] = useState(true);
   const value = useMemo(() => {
@@ -24,33 +26,29 @@ export default function Display() {
 
   useEffect(() => {
     setLoading(true);
-    if (data.length > 0) {
-      setTimeout(() => {
-        setLoading(false);
-      }, 2500);
-    }
   }, [currentData]);
+
+  if (data.length > 0) {
+    setLoading(false);
+    displayScreen = currentData.map(
+      ({ document_id, title, img, text, owner, created_at }) => (
+        <Document
+          key={document_id}
+          id={document_id}
+          title={title}
+          img={img}
+          date={new Date(created_at)}
+          text={text}
+          owner={owner}
+        />
+      )
+    );
+  }
 
   return (
     <>
       <div className="Galeria-noticias">
-        {loading ? (
-          <PulseLoader id="loader" color={"#add8e6"} />
-        ) : (
-          currentData.map(
-            ({ document_id, title, img, text, owner, created_at }) => (
-              <Document
-                key={document_id}
-                id={document_id}
-                title={title}
-                img={img}
-                date={new Date(created_at)}
-                text={text}
-                owner={owner}
-              />
-            )
-          )
-        )}
+        {loading ? <ResponsiveArticle /> : displayScreen}
       </div>
       <Pagination
         className="pagination-bar"
