@@ -4,7 +4,7 @@ import React, { useEffect, useState, useContext, useMemo } from "react";
 import Document from "../DocumentComponent/Document";
 import CredentialContext from "../../Contexts/CredentialContext";
 import Pagination from "../PaginationComponent/Pagination";
-import { PulseLoader } from "react-spinners";
+import ResponsiveArticle from "../DisplayComponent/Skeleton";
 import { useLocation } from "wouter";
 import axios from "axios";
 
@@ -50,17 +50,20 @@ export default function PrivateDocuments() {
   return (
     <>
       <div className="Galeria-noticias">
-        <PulseLoader id="loader" loading={loading} color={"#add8e6"} />
-        {currentData.map(({ document_id, title, img, text, owner }) => (
-          <Document
-            key={document_id}
-            id={document_id}
-            title={title}
-            img={img}
-            text={text}
-            owner={owner}
-          />
-        ))}
+        {loading ? (
+          <ResponsiveArticle />
+        ) : (
+          currentData.map(({ document_id, title, img, text, owner }) => (
+            <Document
+              key={document_id}
+              id={document_id}
+              title={title}
+              img={img}
+              text={text}
+              owner={owner}
+            />
+          ))
+        )}
         <Pagination
           className="pagination-bar"
           currentPage={currentPage}

@@ -7,6 +7,7 @@ import { FaEdit } from "react-icons/fa";
 import { ScaleLoader } from "react-spinners";
 import "./UserInfo.css";
 import axios from "axios";
+import ResponsiveArticle from "./Skeleton";
 
 export default function UserInfo() {
   const API_URL = "http://localhost:8000/api/";
@@ -110,125 +111,133 @@ export default function UserInfo() {
         <Form onSubmit={handleSubmit(updateUserdata, onError)}>
           <Form.Control type="hidden" value="PATCH" {...register("_method")} />
           <div className="Body-noticia-alt p-2">
-            <Row>
-              <Col className="Col-alt">
-                <Form.Label>Nombre</Form.Label>
-                <Form.Control
-                  type="text"
-                  disabled={edit ? false : true}
-                  defaultValue={userInfo.nombre}
-                  className={edit ? "" : "transparent"}
-                  {...register("nombre")}
-                />
-              </Col>
-              <Col className="Col-alt">
-                <Form.Label>Rol desempeñado</Form.Label>
-                <Form.Control
-                  type="text"
-                  disabled
-                  className={edit ? "" : "transparent"}
-                  defaultValue={userInfo.role}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col className="Col-alt">
-                <Form.Label>Gerencia</Form.Label>
-                <Form.Control
-                  type="text"
-                  disabled
-                  className={edit ? "" : "transparent"}
-                  defaultValue={userInfo.gerencia}
-                />
-              </Col>
-              <Col className="Col-alt">
-                <Form.Label>Estatus</Form.Label>
-                <Form.Control
-                  type="text"
-                  disabled
-                  className={edit ? "" : "transparent"}
-                  defaultValue={userInfo.estatus}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col className="Col-alt">
-                <Form.Label>Cedula</Form.Label>
-                <Form.Control
-                  type="text"
-                  disabled
-                  defaultValue={userInfo.cedula}
-                />
-              </Col>
-              <Col className="Col-alt">
-                <Form.Label>Correo electronico</Form.Label>
-                <Form.Control
-                  type="text"
-                  disabled={edit ? false : true}
-                  className={edit ? "" : "transparent"}
-                  defaultValue={userInfo.email}
-                  {...register("email", {
-                    pattern:
-                      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                  })}
-                />
-              </Col>
-            </Row>
-            {edit ? (
-              <Row>
-                <Col className="Col-alt">
-                  <Form.Label>Contraseña</Form.Label>
-                  <Form.Control
-                    type="password"
-                    placeholder="*******"
-                    defaultValue={undefined}
-                    {...register("password")}
-                    onKeyPress={(event) => {
-                      if (!/[a-zA-Z0-9!@#$%\^&*)(+=._-]*$/.test(event.key)) {
-                        event.preventDefault();
-                      }
-                    }}
-                  />
-                </Col>
-                <Col className="Col-alt">
-                  <Form.Label>Confirmar contraseña</Form.Label>
-                  <Form.Control
-                    type="password"
-                    placeholder="*******"
-                    defaultValue={undefined}
-                    {...register("passwordConfirm", {
-                      validate: {
-                        matchesPreviousPassword: (value) => {
-                          const { password } = getValues();
-                          return (
-                            password === value ||
-                            "Las contraseñas no son iguales"
-                          );
-                        },
-                      },
-                    })}
-                  />
-                  {errors.passwordConfirm && (
-                    <span className="Error">
-                      Las contraseñas no son iguales*{" "}
-                    </span>
-                  )}
-                </Col>
-              </Row>
-            ) : null}
-            <Row>
-              <Col className="Col-alt">
-                <Form.Label>Direccion</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={4}
-                  className={edit ? "" : "transparent"}
-                  disabled={edit ? false : true}
-                  defaultValue={userInfo.direccion}
-                  {...register("direccion")}
-                />
-              </Col>
-            </Row>
+            {loading ? (
+              <ResponsiveArticle />
+            ) : (
+              <>
+                <Row>
+                  <Col className="Col-alt">
+                    <Form.Label>Nombre</Form.Label>
+                    <Form.Control
+                      type="text"
+                      disabled={edit ? false : true}
+                      defaultValue={userInfo.nombre}
+                      className={edit ? "" : "transparent"}
+                      {...register("nombre")}
+                    />
+                  </Col>
+                  <Col className="Col-alt">
+                    <Form.Label>Rol desempeñado</Form.Label>
+                    <Form.Control
+                      type="text"
+                      disabled
+                      className={edit ? "" : "transparent"}
+                      defaultValue={userInfo.role}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col className="Col-alt">
+                    <Form.Label>Gerencia</Form.Label>
+                    <Form.Control
+                      type="text"
+                      disabled
+                      className={edit ? "" : "transparent"}
+                      defaultValue={userInfo.gerencia}
+                    />
+                  </Col>
+                  <Col className="Col-alt">
+                    <Form.Label>Estatus</Form.Label>
+                    <Form.Control
+                      type="text"
+                      disabled
+                      className={edit ? "" : "transparent"}
+                      defaultValue={userInfo.estatus}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col className="Col-alt">
+                    <Form.Label>Cedula</Form.Label>
+                    <Form.Control
+                      type="text"
+                      disabled
+                      defaultValue={userInfo.cedula}
+                    />
+                  </Col>
+                  <Col className="Col-alt">
+                    <Form.Label>Correo electronico</Form.Label>
+                    <Form.Control
+                      type="text"
+                      disabled={edit ? false : true}
+                      className={edit ? "" : "transparent"}
+                      defaultValue={userInfo.email}
+                      {...register("email", {
+                        pattern:
+                          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                      })}
+                    />
+                  </Col>
+                </Row>
+                {edit ? (
+                  <Row>
+                    <Col className="Col-alt">
+                      <Form.Label>Contraseña</Form.Label>
+                      <Form.Control
+                        type="password"
+                        placeholder="*******"
+                        defaultValue={undefined}
+                        {...register("password")}
+                        onKeyPress={(event) => {
+                          if (
+                            !/[a-zA-Z0-9!@#$%\^&*)(+=._-]*$/.test(event.key)
+                          ) {
+                            event.preventDefault();
+                          }
+                        }}
+                      />
+                    </Col>
+                    <Col className="Col-alt">
+                      <Form.Label>Confirmar contraseña</Form.Label>
+                      <Form.Control
+                        type="password"
+                        placeholder="*******"
+                        defaultValue={undefined}
+                        {...register("passwordConfirm", {
+                          validate: {
+                            matchesPreviousPassword: (value) => {
+                              const { password } = getValues();
+                              return (
+                                password === value ||
+                                "Las contraseñas no son iguales"
+                              );
+                            },
+                          },
+                        })}
+                      />
+                      {errors.passwordConfirm && (
+                        <span className="Error">
+                          Las contraseñas no son iguales*{" "}
+                        </span>
+                      )}
+                    </Col>
+                  </Row>
+                ) : null}
+                <Row>
+                  <Col className="Col-alt">
+                    <Form.Label>Direccion</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      rows={4}
+                      className={edit ? "" : "transparent"}
+                      disabled={edit ? false : true}
+                      defaultValue={userInfo.direccion}
+                      {...register("direccion")}
+                    />
+                  </Col>
+                </Row>
+              </>
+            )}
           </div>
           <div className="Footer-noticia">
             {edit ? (

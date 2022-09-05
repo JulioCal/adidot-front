@@ -28,27 +28,30 @@ export default function Display() {
     setLoading(true);
   }, [currentData]);
 
-  if (data.length > 0) {
+  if (data.length > 0 && loading === true) {
     setLoading(false);
-    displayScreen = currentData.map(
-      ({ document_id, title, img, text, owner, created_at }) => (
-        <Document
-          key={document_id}
-          id={document_id}
-          title={title}
-          img={img}
-          date={new Date(created_at)}
-          text={text}
-          owner={owner}
-        />
-      )
-    );
   }
 
   return (
     <>
       <div className="Galeria-noticias">
-        {loading ? <ResponsiveArticle /> : displayScreen}
+        {loading ? (
+          <ResponsiveArticle />
+        ) : (
+          currentData.map(
+            ({ document_id, title, img, text, owner, created_at }) => (
+              <Document
+                key={document_id}
+                id={document_id}
+                title={title}
+                img={img}
+                date={new Date(created_at)}
+                text={text}
+                owner={owner}
+              />
+            )
+          )
+        )}
       </div>
       <Pagination
         className="pagination-bar"

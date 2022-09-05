@@ -69,7 +69,6 @@ export default function EditDocument(params) {
   }, [selectedGroup, group]);
 
   useEffect(() => {
-    console.log(doc);
     if (!doc || !logData.isLogged) {
       setLocation("/");
     } else {
@@ -238,7 +237,7 @@ export default function EditDocument(params) {
                 </Stack>
               </Form.Group>
             </Col>
-            <Col>
+            <Col className="Date">
               <p class="stroke">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 72">
                   <text x="0" y="60">

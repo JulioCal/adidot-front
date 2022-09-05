@@ -203,7 +203,7 @@ export default function NewDocument() {
                 </Stack>
               </Form.Group>
             </Col>
-            <Col>
+            <Col className="Date">
               <p class="stroke">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 72">
                   <text x="0" y="60">
